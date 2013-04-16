@@ -17,6 +17,12 @@ span
     clear:left;
 }
 
+#graph
+{
+    clear:none;
+    margin-left:40px;
+}
+
 #warning
 {
     display:none;
@@ -47,4 +53,22 @@ span
     line-height:100px;
     text-align:center;
     background:#000
+}
+
+.chord path {
+  fill-opacity: .67;
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+#chartId 
+{
+    float:left;
+    clear:left;
+}
+
+.liveExample
+{
+    float:left;
+    clear:left;
 }
