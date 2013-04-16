@@ -30,7 +30,7 @@
             var columnPadding = 5;
             $(".bar").remove();
             $(".label").remove();
-
+            $("svg").remove();
             dataset = jsonObject.dataset;
 
             var xScale = d3.scale.ordinal()
