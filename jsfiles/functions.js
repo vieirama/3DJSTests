@@ -8,14 +8,19 @@
         $("#warning").text("");
         $("#warning").hide();
         var json = $("#jsonString").val();
-        
+
         if (json == "") {
             $("#warning").text("String can not be empty");
             $("#warning").show();
         }
+        else {
 
+            //Insert code here...
+            var jsonObject = eval('(' + json + ')');
 
-        //Insert code here...
+            // Will display the string 'someValue'
+            console.log(jsonObject);
+        }
     }
 
 
