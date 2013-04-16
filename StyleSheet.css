@@ -79,3 +79,11 @@ div.bar {
     background-color: teal;
     margin-right: 2px;
 }
+
+.axis {
+    display: inline-block;
+    width: 30px;
+    height: 75px;   /* We'll override this later */
+    background-color: teal;
+    margin-right: 2px;
+}
