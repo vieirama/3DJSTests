@@ -19,8 +19,36 @@
         <br />
         <div class="submitJSON">
             <h2>Insert your JSON string here:</h2>
-            <textarea id="jsonString" rows="10"></textarea>
-            <span id="graph">See your graph here...</span>
+            <span id="graph"></span>
+            <textarea id="jsonString" rows="10">{
+    "dataset": [
+        {
+            "value": 42,
+            "label": "pos1",
+            "color": [ { "R": "254", "G":"0", "B":"0" } ]
+        },
+        {
+            "value": 12,
+            "label": "pos2",
+            "color": [ { "R": "0", "G":"254", "B":"0" } ]
+        },
+        {
+            "value": 51,
+            "label": "pos3",
+            "color": [ { "R": "0", "G":"0", "B":"0" } ]
+        },
+        {
+            "value": 67,
+            "label": "pos4",
+            "color": [ { "R": "0", "G":"0", "B":"254" } ]
+        },
+        {
+            "value": 48,
+            "label": "pos5",
+            "color": [ { "R": "254", "G":"254", "B":"0" } ]
+        }
+    ]
+}</textarea>
             <label id="warning" type="text"></label>
             <button id="submit">Click Here</button>
         

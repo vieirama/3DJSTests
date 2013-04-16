@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-
+    callPost();
     $("#submit").die("click").live("click", function () {
         callPost();
     });
@@ -37,7 +37,7 @@
 							 .rangeRoundBands([0, w], 0.05);
             var yScale = d3.scale.linear()
                      .domain([0, d3.max(dataset, function (d) { return d.value; })])
-					   .range([h, 0]);
+					   .range([h-30, 0]);
 
             var svg = d3.select("#graph")
 						.append("svg")
@@ -49,9 +49,10 @@
 				.enter()
 				.append("rect")
 				.attr("class", "bar")
+
 				.attr("height", function (d) {
 				    var barHeight = yScale(d.value);
-				    return barHeight + "px";
+				    return h-barHeight + "px";
 				})
                 .attr("width", function () {
                     var barWidth = 800 / dataset.length - columnPadding;
@@ -61,7 +62,7 @@
                     return i * (w / dataset.length) + 20;
                 })
 			    .attr("y", function (d) {
-			        return h - yScale(d.value) - columnPadding - 20; //h - yScale(d.value)-20;
+			        return yScale(d.value) - columnPadding - 20; //h - yScale(d.value)-20;
 			    })
                 .style("fill", function (d) {
                     return "rgb(" + d.color[0].R + "," + d.color[0].G + "," + d.color[0].B + ")";
@@ -80,11 +81,11 @@
 			       return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2 + 20;
 			   })
 			   .attr("y", function (d) {
-			       return h - (d.value * 4) - columnPadding - 20;
+			       return yScale(d.value) - columnPadding + 20;
 			   })
 			   .attr("font-family", "sans-serif")
 			   .attr("font-size", "11px")
-			   .attr("fill", "black");
+			   .attr("fill", "white");
 
             //   //AXIS
 
