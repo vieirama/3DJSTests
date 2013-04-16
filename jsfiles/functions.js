@@ -23,5 +23,23 @@
         }
     }
 
+    d3.selectAll("p").style("color", function () {
+        return "hsl(" + Math.random() * 360 + ",100%,50%)";
+    });
 
+    d3.selectAll("#testId").style("color", function () {
+        return "hsl(" + Math.random() * 360 + ",100%,50%)";
+    });
+
+    d3.select("#colorId").transition().style("color", function () {
+        return "hsl(" + Math.random() * 360 + ",100%,50%)";
+    });
+
+    d3.selectAll("#circle").transition().style("color", function () {
+        return "hsl(" + Math.random() * 360 + ",100%,50%)";
+    });
+
+    d3.selectAll("#circle").transition().style("background-color", function () {
+        return "hsl(" + Math.random() * 360 + ",100%,50%)";
+    });
 });

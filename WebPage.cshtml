@@ -1,6 +1,4 @@
-﻿
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
     <head>
     <script type="text/javascript" src="lib/jquery-1.7.2.js"></script>
@@ -12,18 +10,32 @@
     <script type="text/javascript" src="lib/jquery-1.7.2.js"></script>
     <script type="text/javascript" src="lib/jquery-ui-1.8.16.js"></script>
     <script type="text/javascript" src="lib/JSON.js"></script>
+    <link rel="stylesheet" type="text/css" href="StyleSheet.css" />
         <title>3DJS Charting Tests Homepage</title>
     </head>
     <body>
         <h1>This is a page to test charting using the 3DJS framework</h1>
         <br />
-        <h2>Insert your JSON string here:</h2>
-        <textarea id="jsonString" rows="10" style="width:800px; height:600px; float:left; clear:left"></textarea>
+        <div class="submitJSON">
+            <h2>Insert your JSON string here:</h2>
+            <textarea id="jsonString" rows="10"></textarea>
         
-        <label id="warning" type="text" style="display:none; float:left; clear:left; color:Red"></label>
-        <button id="submit" style="float:left; clear:left">Click Here</button>
+            <label id="warning" type="text"></label>
+            <button id="submit">Click Here</button>
         
-        <span style="float:left; clear:left; margin-top:10px">Verify your JSON string <a target="_blank" href="http://jsonlint.com">here</a>.</span>
+            <span>Verify your JSON string <a target="_blank" href="http://jsonlint.com">here</a>.</span>
+        </div>
+        <div class="d3Examples">
+            <h2>3DJS examples</h2>
+            <p>Paragraph that changes colors everytime the page reloads.</p>
+            <span id="testId">Another paragraph that changes colors selected by Id.</span><br />
+            <span id="colorId">Changing colors by transition, selected by Id.</span><br />
+            <div id="circle">Circle</div>
+        </div>
+        <div class="moreinfo">
+            <span>Check out the D3 API Reference <a target="_blank" href="https://github.com/mbostock/d3/wiki/API-Reference">here</a>.</span>
+            <span>More D3 tutorials <a target="_blank" href="https://github.com/mbostock/d3/wiki/Tutorials">here</a>.</span>
+        </div>
     </body>
 </html>
 

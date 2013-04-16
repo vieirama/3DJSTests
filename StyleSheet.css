@@ -1,0 +1,50 @@
+﻿body 
+{
+    background-color:#f3f3f3
+}
+
+span
+{
+    float:left;
+    clear:left;
+}
+
+#jsonString
+{
+    width:800px;
+    height:600px;
+    float:left;
+    clear:left;
+}
+
+#warning
+{
+    display:none;
+    float:left;
+    clear:left;
+    color:Red;
+}
+
+#submit
+{
+    float:left;
+    clear:left;
+}
+
+.d3Examples
+{
+    float:left;
+    clear:left;
+}
+
+#circle
+{
+    width:100px;
+    height:100px;
+    border-radius:50px;
+    font-size:20px;
+    color:#fff;
+    line-height:100px;
+    text-align:center;
+    background:#000
+}
