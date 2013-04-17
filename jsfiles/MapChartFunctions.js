@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $("#submit").click(function () {
-        if($('input[name=chartOption]:checked').val() == "rowChart") {
+        if($('input[name=chartOption]:checked').val() == "mapChart") {
             $("#warning").text("");
             $("#warning").hide();
             clearGraphs();
@@ -14,7 +14,7 @@ $(document).ready(function () {
             else {
                 var jsonObject = eval('(' + json + ')');
                 console.log(jsonObject);
-                //drawMapChart(jsonObject.dataset);
+                drawMapChart(jsonObject.dataset);
             }
         }
     });
@@ -22,20 +22,19 @@ $(document).ready(function () {
 
   var div = null;
   
-drawMapChart(null);
 function drawMapChart(data){
   var formatTime = d3.time.format("%e %B");
 
   var width = 960,
       height = 500,
       centered;
- div = d3.select("body").append("div") 
+ div = d3.select("#graph").append("div") 
       .attr("class", "tooltip")               
       .style("opacity", 0);
 
   var path = d3.geo.path();
    
-  var svg = d3.select("body").append("svg")
+  var svg = d3.select("#graph").append("svg")
       .attr("width", width)
       .attr("height", height);
    
@@ -65,7 +64,7 @@ function drawMapChart(data){
 function click(d) {
   var x, y, k;
   if(d){
-	   alert(d.id);
+	   alert("Portugal Here!");
   }
 }
 

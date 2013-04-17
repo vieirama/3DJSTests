@@ -57,9 +57,9 @@ function updateChart(JSONdata) {
     }
     
     data = inc;        
-
+    h = 600;
     // ---------------------------------------------------------------------
-    var svg = d3.select("#d3portfolio").append("svg:svg")
+    var svg = d3.select("#graph").append("svg:svg")
     .attr("width", w).attr("height", h);
 
     var arc_grp = svg.append("svg:g")
@@ -117,5 +117,5 @@ function updateChart(JSONdata) {
 
 function clearGraphs() {
     $("#graph svg").remove();
-    $("#d3portfolio svg").remove();
+    //$("#d3portfolio svg").remove();
 }

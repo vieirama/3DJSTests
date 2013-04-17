@@ -69,3 +69,5 @@ Examples for pie chart
         100
     ]
 }
+
+{ dataset: [3, 6, 2, 7, 5, 2, 1, 0, 8, 9, 2, 5, 7] }
