@@ -16,20 +16,14 @@
 }
 
 </style>
-<body>
-    <div id="objectives">
-        <a href="#agg"></a>        
-        <a href="#inc"></a> 
-    </div>
+<body>   
     <div id="d3portfolio"></div>
 </body>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="lib/jquery-1.7.2.js"></script>
 <script>
-
-    var agg = { labels: ['LCAP', 'MCAP', 'SCAP', 'Intl', 'Alt', 'Fixed'], pct: [5, 10, 6, 5, 14, 50] },
-
+   
     inc = { labels: ['LCAP', 'MCAP', 'SCAP', 'Intl', 'Alt', 'Fixed'], pct: [0, 0, 0, 0, 0, 100] },
 
     data = inc;    
@@ -100,8 +94,9 @@
     }
 
     // update chart
-    function updateChart(model) {
-        data = eval(model); // which model?
+    function updateChart() {
+
+        data = { labels: ['LCAP', 'MCAP', 'SCAP', 'Intl', 'Alt', 'Fixed'], pct: [5, 10, 6, 5, 14, 50] },
 
         arcs.data(donut(data.pct)); // recompute angles, rebind data
         arcs.transition().ease("elastic").duration(dur).attrTween("d", arcTween);
@@ -114,14 +109,8 @@
             return data.labels[i]; 
         });
 
-//        pieLabel.text(data.label);
     }   
 
-//    // click handler
-//    $("#objectives a").click(function () {
-//        updateChart(this.href.slice(this.href.indexOf('#') + 1));
-//    });
-
-    updateChart("agg");
+    updateChart();
 
 </script>
