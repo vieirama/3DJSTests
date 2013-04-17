@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+path {
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+ 
+line {
+    stroke: black;
+}
+ 
+text {
+    font-family: Arial;
+    font-size: 9pt;
+}
+
+</style>
+<body>
+    <div id="objectives">
+        <a href="#agg"></a>        
+        <a href="#inc"></a> 
+    </div>
+    <div id="d3portfolio"></div>
+</body>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="lib/jquery-1.7.2.js"></script>
+<script>
+
+
+    var data = [3, 6, 2, 7, 5, 2, 1, 0, 8, 9, 2, 5, 7],
+    emptyData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    w = 400,
+    h = 400,
+    margin = 20,
+    y = d3.scale.linear().domain([0, d3.max(data)]).range([0 + margin, h - margin]),
+    yInv = d3.scale.linear().domain([0, d3.max(data)]).range([h - margin, 0 + margin]),
+    x = d3.scale.linear().domain([0, data.length]).range([0 + margin, w - margin]);
+
+    var vis = d3.select("body")
+    .append("svg:svg")
+    .attr("width", w)
+    .attr("height", h);
+
+    var g = vis.append("svg:g")
+    .attr("transform", "translate(0, "+(h)+")");
+
+    var line = d3.svg.line()
+    .x(function (d, i) { return x(i); })
+    .y(function (d) { return -1 * y(d); });
+
+    //var arcs = d3.selectAll("line");
+
+    g.append("svg:path").attr("d", line(emptyData));
+
+
+    //AXIS
+    var xAxis = d3.svg.axis()
+			                .scale(x)
+			                .orient("bottom");
+    vis.append("g")
+			.attr("class", "axis")
+			.attr("transform", "translate(0," + (h - margin) + ")")
+			.call(xAxis);
+
+    var yAxis = d3.svg.axis()
+			                .scale(yInv)
+			                .orient("left");
+    vis.append("g")
+			.attr("class", "axis")
+			.attr("transform", "translate(" + margin + ",0)")
+			.call(yAxis);
+
+
+
+    // update chart - Inicial Transition
+    function updateChart(model) {
+        data = eval(model); // which model?
+        g.selectAll("path").transition().ease("").duration(2000).attr("d", line(data))
+
+    }
+
+    updateChart("data");
+
+//    g.selectAll(".xLabel")
+//    .data(x.ticks(5))
+//    .enter().append("svg:text")
+//    .attr("class", "xLabel")
+//    .text(String)
+//    .attr("x", function (d) { return x(d) })
+//    .attr("y", 0)
+//    .attr("text-anchor", "middle");
+
+//    g.selectAll(".yLabel")
+//    .data(y.ticks(4))
+//    .enter().append("svg:text")
+//    .attr("class", "yLabel")
+//    .text(String)
+//    .attr("x", 0)
+//    .attr("y", function (d) { return -1 * y(d) })
+//    .attr("text-anchor", "right")
+//    .attr("dy", 4);
+
+//    g.selectAll(".xTicks")
+//    .data(x.ticks(5))
+//    .enter().append("svg:line")
+//    .attr("class", "xTicks")
+//    .attr("x1", function (d) { return x(d); })
+//    .attr("y1", -1 * y(0))
+//    .attr("x2", function (d) { return x(d); })
+//    .attr("y2", -1 * y(-0.3))
+
+//    g.selectAll(".yTicks")
+//    .data(y.ticks(4))
+//    .enter().append("svg:line")
+//    .attr("class", "yTicks")
+//    .attr("y1", function (d) { return -1 * y(d); })
+//    .attr("x1", x(-0.3))
+//    .attr("y2", function (d) { return -1 * y(d); })
+//    .attr("x2", x(0))
+
+
+//    var agg = { labels: ['LCAP', 'MCAP', 'SCAP', 'Intl', 'Alt', 'Fixed'], pct: [5, 10, 6, 5, 14, 50] },
+
+//    inc = { labels: ['LCAP', 'MCAP', 'SCAP', 'Intl', 'Alt', 'Fixed'], pct: [0, 0, 0, 0, 0, 1] },
+
+//    data = inc;    
+
+//    var w = 750,                       // width and height, natch
+//    h = 750,
+//    r = Math.min(w, h) / 2,        // arc radius
+//    dur = 2000,                     // duration, in milliseconds
+//    color = d3.scale.category10(),
+//    donut = d3.layout.pie().sort(null),
+//    arc = d3.svg.arc().innerRadius(r - 10).outerRadius(10);
+
+//    // ---------------------------------------------------------------------
+//    var svg = d3.select("#d3portfolio").append("svg:svg")
+//    .attr("width", w).attr("height", h);
+
+//    var arc_grp = svg.append("svg:g")
+//    .attr("class", "arcGrp")
+//    .attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")");
+
+//    var label_group = svg.append("svg:g")
+//    .attr("class", "lblGroup")
+//    .attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")");
+
+//    // GROUP FOR CENTER TEXT
+//    var center_group = svg.append("svg:g")
+//    .attr("class", "ctrGroup")
+//    .attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")");
+
+////    // CENTER LABEL
+////    var pieLabel = center_group.append("svg:text")
+////    .attr("dy", ".35em").attr("class", "chartLabel")
+////    .attr("text-anchor", "middle")
+////    .text(data.label);
+
+//    // DRAW ARC PATHS
+//    var arcs = arc_grp.selectAll("path")
+//    .data(donut(data.pct));
+//    arcs.enter().append("svg:path")
+//    .attr("stroke", "white")
+//    .attr("stroke-width", 0.5)
+//    .attr("fill", function (d, i) { return color(i); })
+//    .attr("d", arc)
+//    .each(function (d) { this._current = d })
+//    .on("click", function (d) {
+//        alert(d.data);
+//    });
+
+//    // DRAW SLICE LABELS
+//    var sliceLabel = label_group.selectAll("text")
+//    .data(donut(data.pct));
+//    sliceLabel.enter().append("svg:text")
+//    .attr("class", "arcLabel")
+//    .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+//    .attr("text-anchor", "middle")
+//    
+
+//    // --------- "PAY NO ATTENTION TO THE MAN BEHIND THE CURTAIN" ---------
+
+//    // Store the currently-displayed angles in this._current.
+//    // Then, interpolate from this._current to the new angles.
+//    function arcTween(a) {
+//        var i = d3.interpolate(this._current, a);
+//        this._current = i(0);
+//        return function (t) {
+//            return arc(i(t));
+//        };
+//    }
+
+//    // update chart
+//    function updateChart(model) {
+//        data = eval(model); // which model?
+
+//        arcs.data(donut(data.pct)); // recompute angles, rebind data
+//        arcs.transition().ease("circ").duration(dur).attrTween("d", arcTween);
+
+//        sliceLabel.data(donut(data.pct));
+//        sliceLabel.transition().ease("elastic").duration(dur)
+//        .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+//        .style("fill-opacity", function (d) { return d.value == 0 ? 1e-6 : 1; })
+//        .text(function (d, i) {
+//            return data.labels[i]; 
+//        });
+
+////        pieLabel.text(data.label);
+//    }   
+
+////    // click handler
+////    $("#objectives a").click(function () {
+////        updateChart(this.href.slice(this.href.indexOf('#') + 1));
+////    });
+
+//    updateChart("agg");
+
+</script>
