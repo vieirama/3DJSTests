@@ -27,7 +27,7 @@
     var w = 750,                       // width and height, natch
     h = 750,
     r = Math.min(w, h) / 2,        // arc radius
-    dur = 3000,                     // duration, in milliseconds
+    dur = 500,                     // duration, in milliseconds
     color = d3.scale.category10(),
     donut = d3.layout.pie().sort(null);        
     arc = d3.svg.arc().innerRadius(r - 10).outerRadius(0);
@@ -49,13 +49,13 @@
 
         inc = { labels: [], pct: [] };
 
-        var MaxValue = Math.min.apply(null, JSONdata.pct);
+        var MaxValue = Math.max.apply(null, JSONdata.pct);
 
         for (var i = 0; i < JSONdata.pct.length; i++) {
             inc.labels[i] = JSONdata.labels[i];
             inc.pct[i] = 0;
 
-            if (i == inc.pct.length -1)
+            if (i == JSONdata.pct.length - 1)
                 inc.pct[i] = MaxValue;            
         }
         
@@ -118,7 +118,7 @@
 
     }
 
-    data = { labels: ['LCAP', 'MCAP', 'SCAP', 'Intl', 'Alt'], pct: [50, 10, 6, 5, 14] },
+    data = { labels: ['LCAP', 'MCAP', 'SCAP', 'Intl', 'Alt', 'Ganda benfica'], pct: [50, 10, 6, 5, 14, 100] },
 
     updateChart(data);
 
