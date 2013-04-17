@@ -94,9 +94,7 @@
     }
 
     // update chart
-    function updateChart() {
-
-        data = { labels: ['LCAP', 'MCAP', 'SCAP', 'Intl', 'Alt', 'Fixed'], pct: [5, 10, 6, 5, 14, 50] },
+    function updateChart(data) {        
 
         arcs.data(donut(data.pct)); // recompute angles, rebind data
         arcs.transition().ease("elastic").duration(dur).attrTween("d", arcTween);
@@ -109,8 +107,10 @@
             return data.labels[i]; 
         });
 
-    }   
+    }
 
-    updateChart();
+    data = { labels: ['LCAP', 'MCAP', 'SCAP', 'Intl', 'Alt', 'Fixed'], pct: [5, 10, 6, 5, 14, 50] },
+
+    updateChart(data);
 
 </script>
