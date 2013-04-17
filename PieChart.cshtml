@@ -27,7 +27,8 @@
     var w = 750,                       // width and height, natch
     h = 750,
     r = Math.min(w, h) / 2,        // arc radius
-    dur = 500,                     // duration, in milliseconds
+    dur = 2000,                     // duration, in milliseconds
+    delay = 500,
     color = d3.scale.category10(),
     donut = d3.layout.pie().sort(null);        
     arc = d3.svg.arc().innerRadius(r - 10).outerRadius(0);
@@ -106,10 +107,10 @@
         .attr("text-anchor", "middle")
 
         arcs.data(donut(JSONdata.pct)); // recompute angles, rebind data
-        arcs.transition().ease("elastic").duration(dur).attrTween("d", arcTween);
+        arcs.transition().ease("elastic").duration(dur).delay(delay).attrTween("d", arcTween);
 
         sliceLabel.data(donut(JSONdata.pct));
-        sliceLabel.transition().ease("elastic").duration(dur)
+        sliceLabel.transition().ease("elastic").duration(dur).delay(delay)
         .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
         .style("fill-opacity", function (d) { return d.value == 0 ? 1e-6 : 1; })
         .text(function (d, i) {
