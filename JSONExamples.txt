@@ -1,4 +1,5 @@
 ﻿Example data for bar chart
+
 {
     "dataset": [
         {
@@ -29,3 +30,42 @@
     ]
 }
 
+Examples for pie chart
+
+{
+    "labels": [
+        "LCAP",
+        "MCAP",
+        "SCAP",
+        "Intl",
+        "Alt",
+        "Fixed"
+    ],
+    "pct": [
+        5,
+        10,
+        6,
+        5,
+        14,
+        50
+    ]
+}
+
+{
+    "labels": [
+        "LCAP",
+        "MCAP",
+        "SCAP",
+        "Intl",
+        "Alt",
+        "Fixed"
+    ],
+    "pct": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        100
+    ]
+}

@@ -6,7 +6,8 @@
     <script type="text/javascript" src="lib/JSON.js"></script>
     <script type="text/javascript" src="lib/d3.v3.js"></script>
     <script type="text/javascript" src="lib/d3.v3.min.js"></script>
-    <script type="text/javascript" src="jsfiles/functions.js"></script>
+    <script type="text/javascript" src="jsfiles/BarChartFunctions.js"></script>
+    <script type="text/javascript" src="jsfiles/PieChartFunctions.js"></script>
     <script type="text/javascript" src="lib/jquery-1.7.2.js"></script>
     <script type="text/javascript" src="lib/jquery-ui-1.8.16.js"></script>
     <script type="text/javascript" src="lib/JSON.js"></script>
@@ -19,40 +20,15 @@
         <br />
         <div class="submitJSON">
             <h2>Insert your JSON string here:</h2>
+            <textarea id="jsonString" rows="10"></textarea>
             <span id="graph"></span>
-            <textarea id="jsonString" rows="10">{
-
-    "dataset": [
-        {
-            "value": 42,
-            "label": "pos1",
-            "color": [ { "R": "254", "G":"0", "B":"0" } ]
-        },
-        {
-            "value": 12,
-            "label": "pos2",
-            "color": [ { "R": "0", "G":"254", "B":"0" } ]
-        },
-        {
-            "value": 51,
-            "label": "pos3",
-            "color": [ { "R": "0", "G":"0", "B":"0" } ]
-        },
-        {
-            "value": 67,
-            "label": "pos4",
-            "color": [ { "R": "0", "G":"0", "B":"254" } ]
-        },
-        {
-            "value": 48,
-            "label": "pos5",
-            "color": [ { "R": "254", "G":"254", "B":"0" } ]
-        }
-    ]
-}</textarea>
+            <div id="d3portfolio"></div>
             <label id="warning" type="text"></label>
-            <button id="submit">Click Here</button>
-        
+            <span id="chartOption">
+                <input type="radio" name="chartOption" value="barChart" checked="checked">Bar Chart</input>
+                <input type="radio" name="chartOption" value="pieChart">Pie Chart</input>
+            <span>
+            <button id="submit">Create Chart</button>
             <span>Verify your JSON string <a target="_blank" href="http://jsonlint.com">here</a>.</span>
         </div>
         

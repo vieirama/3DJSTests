@@ -1,10 +1,13 @@
 ﻿$(document).ready(function () {
-    callPost();
     $("#submit").die("click").live("click", function () {
-        callPost();
+
+        if($('input[name=chartOption]:checked').val() == "barChart")
+            callPostBarChart();
+        if($('input[name=chartOption]:checked').val() == "pieChart")
+            callPostPieChart();
     });
 
-    function callPost() {
+    function callPostBarChart() {
         $("#warning").text("");
         $("#warning").hide();
         var json = $("#jsonString").val();
@@ -14,11 +17,6 @@
             $("#warning").show();
         }
         else {
-
-
-
-
-            //Insert code here...
             var jsonObject = eval('(' + json + ')');
             console.log(jsonObject);
 
@@ -38,7 +36,7 @@
 							 .rangeRoundBands([0, w], 0.05);
             var yScale = d3.scale.linear()
                      .domain([0, d3.max(dataset, function (d) { return d.value; })])
-					   .range([h-30, 0]);
+					   .range([h - 30, 0]);
 
             var svg = d3.select("#graph")
 						.append("svg")
@@ -53,7 +51,7 @@
 
 				.attr("height", function (d) {
 				    var barHeight = yScale(d.value);
-				    return h-barHeight + "px";
+				    return h - barHeight + "px";
 				})
                 .attr("width", function () {
                     var barWidth = 800 / dataset.length - columnPadding;
@@ -114,6 +112,116 @@
         }
     }
 
+
+    function callPostPieChart() {
+        //var agg = { labels: ['LCAP', 'MCAP', 'SCAP', 'Intl', 'Alt', 'Fixed'], pct: [5, 10, 6, 5, 14, 50] },
+
+        //inc = { labels: ['LCAP', 'MCAP', 'SCAP', 'Intl', 'Alt', 'Fixed'], pct: [0, 0, 0, 0, 0, 100] },
+
+        //data = inc;
+        $("#warning").text("");
+        $("#warning").hide();
+
+        var json = $("#jsonString").val();
+
+        if (json == "") {
+            $("#warning").text("String can not be empty");
+            $("#warning").show();
+        }
+        else {
+            var jsonObject = eval('(' + json + ')');
+            console.log(jsonObject);
+
+            inc = { labels: ['LCAP', 'MCAP', 'SCAP', 'Intl', 'Alt', 'Fixed'], pct: [0, 0, 0, 0, 0, 100] },
+
+            data = inc;    
+
+            var w = 750,                       // width and height, natch
+            h = 750,
+            r = Math.min(w, h) / 2,        // arc radius
+            dur = 2000,                     // duration, in milliseconds
+            color = d3.scale.category10(),
+            donut = d3.layout.pie().sort(null),
+            arc = d3.svg.arc().innerRadius(r - 10).outerRadius(0);
+
+            // ---------------------------------------------------------------------
+            var svg = d3.select("#d3portfolio").append("svg:svg")
+            .attr("width", w).attr("height", h);
+
+            var arc_grp = svg.append("svg:g")
+            .attr("class", "arcGrp")
+            .attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")");
+
+            var label_group = svg.append("svg:g")
+            .attr("class", "lblGroup")
+            .attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")");
+
+            // GROUP FOR CENTER TEXT
+            var center_group = svg.append("svg:g")
+            .attr("class", "ctrGroup")
+            .attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")");
+
+        //    // CENTER LABEL
+        //    var pieLabel = center_group.append("svg:text")
+        //    .attr("dy", ".35em").attr("class", "chartLabel")
+        //    .attr("text-anchor", "middle")
+        //    .text(data.label);
+
+            // DRAW ARC PATHS
+            var arcs = arc_grp.selectAll("path")
+            .data(donut(data.pct));
+            arcs.enter().append("svg:path")
+            .attr("stroke", "white")
+            .attr("stroke-width", 0.5)
+            .attr("fill", function (d, i) { return color(i); })
+            .attr("d", arc)
+            .each(function (d) { this._current = d })
+            .on("click", function (d) {
+                alert(d.data);
+            });
+
+            // DRAW SLICE LABELS
+            var sliceLabel = label_group.selectAll("text")
+            .data(donut(data.pct));
+            sliceLabel.enter().append("svg:text")
+            .attr("class", "arcLabel")
+            .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+            .attr("text-anchor", "middle");
+
+            updateChart(jsonObject, arcs, sliceLabel, donut, dur, arc);
+        }
+       
+    }
+    
+    // --------- "PAY NO ATTENTION TO THE MAN BEHIND THE CURTAIN" ---------
+
+    // Store the currently-displayed angles in this._current.
+    // Then, interpolate from this._current to the new angles.
+    function arcTween(a) {
+        var i = d3.interpolate(this._current, a);
+        this._current = i(0);
+        return function (t) {
+            return arc(i(t));
+        };
+    }
+
+    // update chart
+    function updateChart(data, arcs, sliceLabel, donut, dur, arc) {        
+
+        arcs.data(donut(data.pct)); // recompute angles, rebind data
+        arcs.transition().ease("elastic").duration(dur).attrTween("d", arcTween);
+
+        sliceLabel.data(donut(data.pct));
+        sliceLabel.transition().ease("elastic").duration(dur)
+        .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+        .style("fill-opacity", function (d) { return d.value == 0 ? 1e-6 : 1; })
+        .text(function (d, i) {
+            return data.labels[i]; 
+        });
+
+    }
+    
+
     d3.selectAll("p").style("color", function () {
         return "hsl(" + Math.random() * 360 + ",100%,50%)";
     });
@@ -134,11 +242,24 @@
         return "hsl(" + Math.random() * 360 + ",100%,50%)";
     });
 
+    //Load text area values
+    var barChartExample = "{\"dataset\": \n[{\"value\": 42,\"label\": \"pos1\",\"color\": [ { \"R\": \"254\", \"G\":\"0\", \"B\":\"0\" } ]   },\n{\"value\": 12,\"label\": \"pos2\",\"color\": [ { \"R\": \"0\", \"G\":\"254\", \"B\":\"0\" } ]},\n{\"value\": 51,\"label\": \"pos3\",\"color\": [ { \"R\": \"0\", \"G\":\"0\", \"B\":\"0\" } ]},\n{\"value\": 67,\"label\": \"pos4\",\"color\": [ { \"R\": \"0\", \"G\":\"0\", \"B\":\"254\" } ]},\n{\"value\": 48,\"label\": \"pos5\",\"color\": [ { \"R\": \"254\", \"G\":\"254\", \"B\":\"0\" } ]}]}";
+
+    var pieChartExample = "{\"labels\": [\"LCAP\",\"MCAP\",\"SCAP\",\"Intl\",\"Alt\",\"Fixed\"],\"pct\": [5,10,6,5,14,50]}";
+
+    $("#jsonString").text(barChartExample);
+    
+    $("input[name=chartOption]").die("click").live("click", function () {
+        if($('input[name=chartOption]:checked').val() == "barChart")
+            $("#jsonString").text(barChartExample);
+        if($('input[name=chartOption]:checked').val() == "pieChart")
+            $("#jsonString").text(pieChartExample);
+    });
 
     // From http://mkweb.bcgsc.ca/circos/guide/tables/
     //    var matrix = [
     //  [11975, 5871, 8916, 2868],
-    //  [1951, 10048, 2060, 6171],
+ //  [1951, 10048, 2060, 6171],
     //  [8010, 16145, 8090, 8045],
     //  [1013, 990, 940, 6907]
     //];
@@ -235,9 +356,5 @@
     //        var newNumber = Math.random() * 30;  //New random number (0-30)
     //        dataset = dataset.concat(newNumber); //Add new number to array
     //    }
-
-
-
-
 
 });
