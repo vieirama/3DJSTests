@@ -12,9 +12,10 @@ span
 #jsonString
 {
     width:800px;
-    height:600px;
+    height:200px;
     float:left;
     clear:left;
+    margin-bottom:20px;
 }
 
 #graph
@@ -71,6 +72,11 @@ span
 {
     float:left;
     clear:left;
+}
+
+#d3portfolio
+{
+    float:left;
 }
 div.bar {
     display: inline-block;
