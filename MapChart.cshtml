@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+ 
+.background {
+  fill: none;
+  pointer-events: all;
+}
+ 
+#states {
+  fill: #aaa;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+ 
+#states .active {
+  fill: orange;
+}
+
+#states .features{
+	fill: grey;
+}
+
+#states .hover{
+  fill: red;
+}
+
+div.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  width: 60px;                  
+  height: 28px;                 
+  padding: 2px;             
+  font: 12px sans-serif;        
+  background: lightsteelblue;   
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;         
+}
+ 
+</style>
+<body>
+<script type="text/javascript" src="lib/d3.v3.js"></script>
+<script type="text/javascript" src="lib/d3.v3.min.js"></script>
+<script type="text/javascript" src="lib/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="lib/jquery-ui-1.8.16.js"></script>
+<script type="text/javascript" src="lib/JSON.js"></script>
+<script type="text/javascript" src="jsfiles/MapChartFunctions.js"></script>
