@@ -94,6 +94,9 @@ div.bar {
     margin-right: 2px;
 }
 
+.rowbar{
+  fill: steelblue;
+}
 
 .chartLabel {
   font: 16px sans-serif;

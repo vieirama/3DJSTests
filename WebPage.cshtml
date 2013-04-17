@@ -7,6 +7,7 @@
     <script type="text/javascript" src="lib/d3.v3.js"></script>
     <script type="text/javascript" src="lib/d3.v3.min.js"></script>
     <script type="text/javascript" src="jsfiles/BarChartFunctions.js"></script>
+    <script type="text/javascript" src="jsfiles/RowChartFunctions.js"></script>
     <script type="text/javascript" src="jsfiles/PieChartFunctions.js"></script>
     <script type="text/javascript" src="lib/jquery-1.7.2.js"></script>
     <script type="text/javascript" src="lib/jquery-ui-1.8.16.js"></script>
@@ -22,7 +23,9 @@
             <h2>Insert your JSON string here:</h2>
             <span id="chartOption">
                 <input type="radio" name="chartOption" value="barChart" checked="checked">Bar Chart</input>
+                <input type="radio" name="chartOption" value="rowChart">Row Chart</input>
                 <input type="radio" name="chartOption" value="pieChart">Pie Chart</input>
+                <input type="radio" name="chartOption" value="lineChart">Line Chart</input>
             <span>
             <button id="submit">Create Chart</button>
             <textarea id="jsonString" rows="10"></textarea>

@@ -1,23 +1,24 @@
-$("#submit").die("click").live("click", function () {
-    if($('input[name=chartOption]:checked').val() == "pieChart") {
-        $("#warning").text("");
-        $("#warning").hide();
-        clearGraphs();
+$(document).ready(function () {
+    $("#submit").click(function () {
+        if($('input[name=chartOption]:checked').val() == "pieChart") {
+            $("#warning").text("");
+            $("#warning").hide();
+            clearGraphs();
 
-        var json = $("#jsonString").val();
+            var json = $("#jsonString").val();
 
-        if (json == "") {
-            $("#warning").text("String can not be empty");
-            $("#warning").show();
+            if (json == "") {
+                $("#warning").text("String can not be empty");
+                $("#warning").show();
+            }
+            else {
+                var jsonObject = eval('(' + json + ')');
+                console.log(jsonObject);
+                updateChart(jsonObject);
+            }
         }
-        else {
-            var jsonObject = eval('(' + json + ')');
-            console.log(jsonObject);
-            updateChart(jsonObject);
-        }
-    }
+    });
 });
-
 var w = 600,                       // width and height, natch
 h = 600,
 r = Math.min(w, h) / 2,        // arc radius
