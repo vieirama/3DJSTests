@@ -20,6 +20,7 @@ $("#submit").die("click").live("click", function () {
 });
 
 
+
 drawRowChart(null);
 
 function drawRowChart(JSONData){
