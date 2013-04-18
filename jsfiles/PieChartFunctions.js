@@ -115,7 +115,3 @@ function updateChart(JSONdata) {
 
 }
 
-function clearGraphs() {
-    $("#graph svg").remove();
-    //$("#d3portfolio svg").remove();
-}

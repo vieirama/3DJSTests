@@ -70,12 +70,7 @@ function drawRowChart(data){
 
 }
 
-    function type(d) {
-        d.value = +d.value;
-        return d;
-    }
-
-    function clearGraphs() {
-        $("#graph svg").remove();
-        $("#d3portfolio svg").remove();
-    }
+function type(d) {
+    d.value = +d.value;
+    return d;
+}
