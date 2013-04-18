@@ -19,7 +19,7 @@ $(document).ready(function () {
         }
     });
 });
-var w = 600,                       // width and height, natch
+var w = 1000,                       // width and height, natch
 h = 600,
 r = Math.min(w, h) / 2-100,        // arc radius
 dur = 2000,                     // duration, in milliseconds
@@ -45,17 +45,19 @@ function arcTween(a) {
 // update chart
 function updateChart(JSONdata) {
 
-    inc = { labels: [], pct: [] };
+    inc = { labels: [], pct: [], title: JSONdata.title };
+    
+    values = { labels: [], pct: [] }
 
-    var MaxValue = Math.max.apply(null, JSONdata.pct);
+    for (var i = 0; i < JSONdata.dataset.length; i++) {
+        inc.labels[i] = JSONdata.dataset[i].X;
+        values.labels[i] = inc.labels[i];
 
-    for (var i = 0; i < JSONdata.pct.length; i++) {
-        inc.labels[i] = JSONdata.labels[i];
         inc.pct[i] = 0;
-
-        if (i == JSONdata.pct.length - 1)
-            inc.pct[i] = MaxValue;            
+        values.pct[i] = JSONdata.dataset[i].Y;
     }
+
+    inc.pct[inc.pct.length - 1] = Math.max.apply(null, values.pct);
     
     data = inc;        
     h = 600;
@@ -63,9 +65,20 @@ function updateChart(JSONdata) {
     var svg = d3.select("#graph").append("svg:svg")
     .attr("width", w).attr("height", h);
 
+    //Title
+    var title = svg.append("text")
+    .attr("class", "legend")
+    .attr("height", 100)
+    .attr("width", 100)
+    .text(data.title)
+    .attr("x", w / 2 + 100)
+    .attr("y", 40)
+    .attr("text-anchor", "middle")
+    .attr("font-size", "36px");
+
     var arc_grp = svg.append("svg:g")
     .attr("class", "arcGrp")
-    .attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")");
+    .attr("transform", "translate(" + (w / 2 + 100) + "," + (h / 2) + ")");
 
     var label_group = svg.append("svg:g")
     .attr("class", "lblGroup")
@@ -113,7 +126,7 @@ function updateChart(JSONdata) {
 	  .attr("x", 45)
       .attr("y", function (d, i) { return i * 30 + 9; })
 	  .text(function (d, i) {
-	      return JSONdata.labels[i] + " ( " + JSONdata.pct[i]+" )";
+	      return values.labels[i] + " ( " + values.pct[i] + " )";
 	  })
       .style("font", "15px sans-serif");
 
@@ -158,7 +171,7 @@ function updateChart(JSONdata) {
 //    .attr("text-anchor", "middle")
 //    .attr("stroke", "black")
 
-    arcs.data(donut(JSONdata.pct)); // recompute angles, rebind data
+        arcs.data(donut(values.pct)); // recompute angles, rebind data
     arcs.transition().ease("elastic").duration(dur).delay(delay).attrTween("d", arcTween);
 
 //    sliceLabel.data(donut(JSONdata.pct));
