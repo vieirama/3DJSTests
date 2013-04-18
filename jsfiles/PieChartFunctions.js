@@ -45,14 +45,16 @@ function arcTween(a) {
 // update chart
 function updateChart(JSONdata) {
 
-    inc = { labels: [], pct: [], title: JSONdata.title };
+    inc = { labels: [], pct: [], id: [], title: JSONdata.title };
     
-    values = { labels: [], pct: [] }
+    values = { labels: [], pct: [], id:[] }
 
     for (var i = 0; i < JSONdata.dataset.length; i++) {
         inc.labels[i] = JSONdata.dataset[i].X;
         values.labels[i] = inc.labels[i];
 
+        values.id[i] = JSONdata.dataset[i].Xid;
+        
         inc.pct[i] = 0;
         values.pct[i] = JSONdata.dataset[i].Y;
     }
@@ -184,8 +186,8 @@ function updateChart(JSONdata) {
             .attr("y", i * 30 + 9);
         });
 
-	  arcs.on("click", function (d) {
-	      alert(d.data);
+	  arcs.on("click", function (d, i) {
+	      alert("ID to link is: " + values.id[i]);
 	  })
         .on("mouseover", function (d, i) {
             d3.select(this).transition()
