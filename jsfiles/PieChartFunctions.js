@@ -118,6 +118,33 @@ function updateChart(JSONdata) {
 	  .attr("width", 10)
 	  .attr("height", 10)
 	  .style("fill", function (d, i) { return color(i); })
+      .on("mouseover", function (d, i) {
+          d3.select(arcs[0][i]).transition()
+                   .duration(300)
+                   .attr("d", arcOver);
+          d3.select(this).transition().ease("").duration(200)
+                .attr("width", 20)
+                .attr("height", 20)
+	          .attr("x", 20)
+              .attr("y", (i * 30) - 5);
+          d3.select(legendTexts[0][i]).transition().ease("").duration(200)
+            .style("font-size", "20px")
+            .attr("y", i * 30 + 12);
+      })
+        .on("mouseout", function (d, i) {
+            d3.select(arcs[0][i]).transition()
+                .ease("elastic")
+               .duration(600)
+               .attr("d", arc);
+            d3.select(this).transition().ease("").duration(200)
+                .attr("width", 10)
+                .attr("height", 10)
+	          .attr("x", 25)
+              .attr("y", i * 30);
+            d3.select(legendTexts[0][i]).transition().ease("").duration(200)
+            .style("font-size", "15px")
+            .attr("y", i * 30 + 9);
+        });
 
     var legendTexts = legend.selectAll('text')
       .data(donut(data.pct))
@@ -128,8 +155,34 @@ function updateChart(JSONdata) {
 	  .text(function (d, i) {
 	      return values.labels[i] + " ( " + values.pct[i] + " )";
 	  })
-      .style("font", "15px sans-serif");
-
+      .style("font", "15px sans-serif")
+      .on("mouseover", function (d, i) {
+          d3.select(arcs[0][i]).transition()
+                   .duration(300)
+                   .attr("d", arcOver);
+          d3.select(legendRects[0][i]).transition().ease("").duration(200)
+                .attr("width", 20)
+                .attr("height", 20)
+	          .attr("x", 20)
+              .attr("y", (i * 30) - 5);
+          d3.select(this).transition().ease("").duration(200)
+            .style("font-size", "20px")
+            .attr("y", i * 30 + 12);
+      })
+        .on("mouseout", function (d, i) {
+            d3.select(arcs[0][i]).transition()
+                .ease("elastic")
+               .duration(600)
+               .attr("d", arc);
+            d3.select(legendRects[0][i]).transition().ease("").duration(200)
+                .attr("width", 10)
+                .attr("height", 10)
+	          .attr("x", 25)
+              .attr("y", i * 30);
+            d3.select(this).transition().ease("").duration(200)
+            .style("font-size", "15px")
+            .attr("y", i * 30 + 9);
+        });
 
 	  arcs.on("click", function (d) {
 	      alert(d.data);
