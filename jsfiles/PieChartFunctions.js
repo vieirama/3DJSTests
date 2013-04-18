@@ -21,12 +21,13 @@ $(document).ready(function () {
 });
 var w = 600,                       // width and height, natch
 h = 600,
-r = Math.min(w, h) / 2,        // arc radius
+r = Math.min(w, h) / 2-100,        // arc radius
 dur = 2000,                     // duration, in milliseconds
 delay = 500,
 color = d3.scale.category10(),
-donut = d3.layout.pie().sort(null);        
-arc = d3.svg.arc().innerRadius(r - 10).outerRadius(0);
+donut = d3.layout.pie().sort(null),
+arc = d3.svg.arc().innerRadius(r - 10).outerRadius(0),
+arcOver = d3.svg.arc().innerRadius(r + 30).outerRadius(0);
 
 
 // --------- "PAY NO ATTENTION TO THE MAN BEHIND THE CURTAIN" ---------
@@ -74,13 +75,7 @@ function updateChart(JSONdata) {
     var center_group = svg.append("svg:g")
     .attr("class", "ctrGroup")
     .attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")");
-
-    //    // CENTER LABEL
-    //    var pieLabel = center_group.append("svg:text")
-    //    .attr("dy", ".35em").attr("class", "chartLabel")
-    //    .attr("text-anchor", "middle")
-    //    .text(data.label);
-
+    
     // DRAW ARC PATHS
     var arcs = arc_grp.selectAll("path")
     .data(donut(data.pct));
@@ -90,32 +85,105 @@ function updateChart(JSONdata) {
     .attr("fill", function (d, i) { return color(i); })
     .attr("d", arc)
     .each(function (d) { this._current = d })
-    .on("click", function (d) {
-        alert(d.data);
-    });
 
-    // DRAW SLICE LABELS
-    var sliceLabel = label_group.selectAll("text")
-    .data(donut(data.pct));
-    sliceLabel.enter().append("svg:text")
-    .attr("class", "arcLabel")
-    .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
-    .attr("text-anchor", "middle")
+
+
+    
+    var legend = svg.append("g")
+	  .attr("class", "legend")
+	  .attr("height", 100)
+	  .attr("width", 100)
+    .attr('transform', 'translate(-20,50)')
+
+
+    var legendRects = legend.selectAll('rect')
+      .data(donut(data.pct))
+      .enter()
+      .append("rect")
+	  .attr("x", 25)
+      .attr("y", function (d, i) { return i * 30; })
+	  .attr("width", 10)
+	  .attr("height", 10)
+	  .style("fill", function (d, i) { return color(i); })
+
+    var legendTexts = legend.selectAll('text')
+      .data(donut(data.pct))
+      .enter()
+      .append("text")
+	  .attr("x", 45)
+      .attr("y", function (d, i) { return i * 30 + 9; })
+	  .text(function (d, i) {
+	      return JSONdata.labels[i] + " ( " + JSONdata.pct[i]+" )";
+	  })
+      .style("font", "15px sans-serif");
+
+
+	  arcs.on("click", function (d) {
+	      alert(d.data);
+	  })
+        .on("mouseover", function (d, i) {
+            d3.select(this).transition()
+                   .duration(300)
+                   .attr("d", arcOver);
+            d3.select(legendRects[0][i]).transition().ease("").duration(200)
+                .attr("width", 20)
+                .attr("height", 20)
+	          .attr("x", 20)
+              .attr("y", (i * 30) - 5);
+            d3.select(legendTexts[0][i]).transition().ease("").duration(200)
+            .style("font-size", "20px")
+            .attr("y", i * 30 + 12);
+        })
+        .on("mouseout", function (d, i) {
+            d3.select(this).transition()
+                .ease("elastic")
+               .duration(600)
+               .attr("d", arc);
+            d3.select(legendRects[0][i]).transition().ease("").duration(200)
+                .attr("width", 10)
+                .attr("height", 10)
+	          .attr("x", 25)
+              .attr("y", i * 30);
+            d3.select(legendTexts[0][i]).transition().ease("").duration(200)
+            .style("font-size", "15px")
+            .attr("y", i * 30 + 9 );
+        });
+
+//    // DRAW SLICE LABELS
+//    var sliceLabel = label_group.selectAll("text")
+//    .data(donut(data.pct));
+//    sliceLabel.enter().append("svg:text")
+//    .attr("class", "arcLabel")
+//    .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+//    .attr("text-anchor", "middle")
+//    .attr("stroke", "black")
 
     arcs.data(donut(JSONdata.pct)); // recompute angles, rebind data
     arcs.transition().ease("elastic").duration(dur).delay(delay).attrTween("d", arcTween);
 
-    sliceLabel.data(donut(JSONdata.pct));
-    sliceLabel.transition().ease("elastic").duration(dur).delay(delay)
-    .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
-    .style("fill-opacity", function (d) { return d.value == 0 ? 1e-6 : 1; })
-    .text(function (d, i) {
-        return JSONdata.labels[i]; 
-    });
+//    sliceLabel.data(donut(JSONdata.pct));
+//    sliceLabel.transition().ease("elastic").duration(dur).delay(delay)
+//    .attr("transform", function (d) { 
+//        var c = arc.centroid(d),
+//            x = c[0],
+//            y = c[1],
+//            // pythagorean theorem for hypotenuse
+//            hh = Math.sqrt(x*x + y*y);
+//        return "translate(" + (x/hh * (r+30)) +  ',' +
+//           (y / hh * (r + 30)) + ")";
+//        //return "translate(" + arc.centroid(d) + ")"; 
+//    })
+//    .style("fill-opacity", function (d) { return d.value == 0 ? 1e-6 : 1; })
+//    .text(function (d, i) {
+//        return JSONdata.labels[i];
+//    });
+
+
+
+
 
 }
 
 function clearGraphs() {
     $("#graph svg").remove();
-    //$("#d3portfolio svg").remove();
 }
