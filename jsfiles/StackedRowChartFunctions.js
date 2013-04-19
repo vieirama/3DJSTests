@@ -114,19 +114,12 @@ function drawStackRowChart(data){
               .enter().append("g")
               .attr("class", "legend")
               .attr("transform", function(d, i) { 
-                      //console.log(d + " " + totalWidth); 
                       totalWidth = ( i % 6 )  * 150;
-                      //console.log("2: " + totalWidth + " " + cont );
-
                        if(totalWidth >= 750){
-                       //   console.log("refactoring: " + totalWidth  + " " + width)
                           aux = ( i  % 6 )  + 30;
                           cont++;
                           totalWidth = 600;
                        }  
-                     // console.log(totalWidth + " " + aux); 
-                     // console.log(i); 
-                     // console.log(d.length); 
                       return "translate(" + totalWidth + ", " + aux + ")"; }
                 );
 
