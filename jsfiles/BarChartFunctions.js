@@ -169,6 +169,8 @@
             $("#jsonString").val(stackBarChartExample2);
         if($('input[name=chartOption]:checked').val() == "stackedRowChart")
             $("#jsonString").val(stackBarChartExample2);
+        if($('input[name=chartOption]:checked').val() == "barChart3D")
+            $("#jsonString").val(barChartExample);
     });
 
     // From http://mkweb.bcgsc.ca/circos/guide/tables/
@@ -279,5 +281,6 @@ function clearGraphs() {
         $("#graph .tooltip").remove();
         $("#graph label").remove();
         $("#d3portfolio svg").remove();
+        $("#graph x3d").remove();
         //$("#d3portfolio svg").remove();
     }
