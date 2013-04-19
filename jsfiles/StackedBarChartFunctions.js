@@ -87,13 +87,13 @@ function drawStackChart(data){
               .style("text-anchor", "end")
               .text("News Items");
 
-          var state = svg.selectAll(".item")
+          var item = svg.selectAll(".item")
               .data(data)
               .enter().append("g")
               .attr("class", "g")
               .attr("transform", function(d) { return "translate(" + x(d.X) + ",0)"; });
 
-          state.selectAll("rect")
+          item.selectAll("rect")
               .data(function(d) { return d.items; })
               .enter().append("rect")
               .attr("width", x.rangeBand())
@@ -119,6 +119,40 @@ function drawStackChart(data){
               .attr("dy", ".35em")
               .style("text-anchor", "end")
               .text(function(d) { return d; });
+
+
+          var legendRects = item.selectAll("rect");
+          //var legendTexts = legend.selectAll("text");
+          
+          legendRects.on("click", function (d, i) {
+              alert(d.name);
+          })
+          .on("mouseover", function (d, i) {
+            d3.select(this).transition()
+                   .duration(300);
+                   //.attr("d", arcOver);
+            //d3.select(legendRects[0][i]).transition().ease("").duration(200)
+              //  .attr("width", 20)
+              //  .attr("height", 20)
+              //  .attr("x", 20)
+              //  .attr("y", (i * 30) - 5);
+            d3.select(legend[0][legend[0].length - i - 1]).transition().ease("").duration(300)
+                .style("font-size", "15px");
+        })
+        .on("mouseout", function (d, i) {
+            d3.select(this).transition()
+                .ease("elastic")
+               .duration(600)
+               //.attr("d", arc);
+           // d3.select(legendRects[0][i]).transition().ease("").duration(200)
+           //     .attr("width", 10)
+           //     .attr("height", 10)
+           // .attr("x", 25)
+           //   .attr("y", i * 30);
+            d3.select(legend[0][legend[0].length - i - 1]).transition().ease("").duration(300)
+                .style("font-size", "10px");
+        })
+        .style("cursor", "pointer");
     //});
 
 }

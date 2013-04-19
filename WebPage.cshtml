@@ -13,6 +13,7 @@
     <script type="text/javascript" src="jsfiles/LineChartFunctions.js"></script>
     <script type="text/javascript" src="jsfiles/NewLineChartFunctions.js"></script>
     <script type="text/javascript" src="jsfiles/StackedBarChartFunctions.js"></script>
+    <script type="text/javascript" src="jsfiles/StackedRowChartFunctions.js"></script>
     <script type="text/javascript" src="lib/jquery-1.7.2.js"></script>
     <script type="text/javascript" src="lib/jquery-ui-1.8.16.js"></script>
     <script type="text/javascript" src="lib/JSON.js"></script>
@@ -28,15 +29,20 @@
             <h2>Insert your JSON string here:</h2>
             <span id="chartOption">
                 <input type="radio" name="chartOption" value="barChart" checked="checked">Bar Chart</input>
-                <input type="radio" name="chartOption" value="barChart3D" checked="checked">Bar Chart 3D</input>
+                <input type="radio" name="chartOption" value="barChart3D">Bar Chart 3D</input>
                 <input type="radio" name="chartOption" value="rowChart">Row Chart</input>
-                <input type="radio" name="chartOption" value="stackBarChart">Stacked/Grouped Chart</input>
-                <input type="radio" name="chartOption" value="pieChart">Pie Chart</input>
                 <input type="radio" name="chartOption" value="lineChart">Line Chart</input>
                 <input type="radio" name="chartOption" value="newLineChart">New Line Chart</input>
                 <input type="radio" name="chartOption" value="lineDateChart">Line Chart with dates</input>
+                <br>
+                <br>
+                <label id="real-life">Real-Life Data</label>
+                <br>
+                <input type="radio" name="chartOption" value="pieChart">Pie Chart</input>
+                <input type="radio" name="chartOption" value="stackBarChart">Stacked/Grouped Bar Chart</input>
+                <input type="radio" name="chartOption" value="stackedRowChart">Stacked/Grouped Row Chart</input>
                 <input type="radio" name="chartOption" value="mapChart">Map Chart</input>
-            <span>
+            </span>
             <button id="submit">Create Chart</button>
             <textarea id="jsonString" rows="10"></textarea>
             <span id="graph"></span>
