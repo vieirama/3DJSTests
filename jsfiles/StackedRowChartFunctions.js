@@ -96,6 +96,7 @@ function drawStackRowChart(data){
               .attr("x", function(d) { return x(d.x0); })
               .attr("width", function(d) { return x(d.x1) - x(d.x0); })
               .style("fill", function(d) { return color(d.name); });
+              
 
         var totalWidth = 0;
         var legend = svg.selectAll(".legend")
