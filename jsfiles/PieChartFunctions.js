@@ -251,10 +251,3 @@ function updateChart(JSONdata) {
 
 
 }
-
-<<<<<<< HEAD
-=======
-function clearGraphs() {
-    $("#graph svg").remove();
-}
->>>>>>> refs/remotes/origin/master
