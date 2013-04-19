@@ -45,7 +45,7 @@ function arcTween(a) {
 // update chart
 function updateChart(JSONdata) {
 
-    inc = { labels: [], pct: [], id: [], title: JSONdata.title };
+    inc = { labels: [], pct: [], id: [] };
     
     values = { labels: [], pct: [], id:[] }
 
@@ -72,7 +72,7 @@ function updateChart(JSONdata) {
     .attr("class", "legend")
     .attr("height", 100)
     .attr("width", 100)
-    .text(data.title)
+    .text("A Pie chart")
     .attr("x", w / 2 + 100)
     .attr("y", 40)
     .attr("text-anchor", "middle")
