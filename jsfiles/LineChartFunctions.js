@@ -6,6 +6,12 @@ $(document).ready(function () {
             callPostLineDateChart();
     });
 
+    function parseDate(input) {
+        var parts = input.match(/(\d+)/g);
+        // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
+        return new Date(parts[2], parts[1], parts[0] ); // months are 0-based
+    }
+
 
     function callPostLineDateChart() {
         $("#warning").text("");
@@ -22,24 +28,25 @@ $(document).ready(function () {
 
             var values = [];
             var w = 1200;
-            var h = 300;
-            var margin = 40;
+            var h = 600;
+            var margin = 130;
             $(".bar").remove();
             $(".label").remove();
             $("svg").remove();
 
-            data = jsonObject.dataset;
-            data.sort(function (a, b) { return d3.ascending(a.date, b.date); });
+            for (var i = 0; i < jsonObject.dataset.length; i++) {
+                jsonObject.dataset[i].X = parseDate(jsonObject.dataset[i].X);
+            }
 
-            var y = d3.scale.linear().domain([0, d3.max(data, function (d) { return d.value; })]).range([0 + margin, h - margin]),
-            yInv = d3.scale.linear().domain([0, d3.max(data, function (d) { return d.value; })]).range([h - margin, 0 + margin]),
+            data = jsonObject.dataset;
+            data.sort(function (a, b) { return d3.ascending(a.X, b.X); });
+
+            var y = d3.scale.linear().domain([0, d3.max(data, function (d) { return d.Y; })]).range([0 + margin, h - margin]),
+            yInv = d3.scale.linear().domain([0, d3.max(data, function (d) { return d.Y; })]).range([h - margin, 0 + margin]),
             //x = d3.scale.linear().domain([0, data.length - 1]).range([0 + margin, w - margin]);
-            x = d3.time.scale()
-	            .domain([d3.min(data, function (d) {
-	                //var dt = new Date(d.date);
-	                return d.date*1000;
-	            }), d3.max(data, function (d) { return d.date * 1000; })])    // values between for month of january
-		        .range([0 + margin, w - margin])
+            x = d3.scale.ordinal().rangeRoundBands([0 + margin, w - margin])
+	            .domain(data.map(function (d) { return d.X; }));   // values between for month of january
+            //.range([0 + margin, w - margin])
             //.ticks(d3.time.day, 15);
 
             var vis = d3.select("#graph")
@@ -51,7 +58,7 @@ $(document).ready(function () {
             .attr("transform", "translate(0, " + (h) + ")");
 
             var line = d3.svg.line()
-            .x(function (d, i) { return x(d.date * 1000); })
+            .x(function (d, i) { return x(d.X); })
             .y(function (d) { return -1 * margin; });
             //.y(function (d) { return -1 * y(d.value); });
 
@@ -64,13 +71,16 @@ $(document).ready(function () {
             //AXIS
             var xAxis = d3.svg.axis()
 			                .scale(x)
-    //.ticks(d3.time.months, 1)
-    .tickFormat(d3.time.format('%m %Y'))
+            //.ticks(24)
+    .tickFormat(d3.time.format('%m-%d-%Y'))
 			                .orient("bottom");
             vis.append("g")
 			.attr("class", "axis")
 			.attr("transform", "translate(0," + (h - margin) + ")")
 			.call(xAxis);
+
+            vis.selectAll(".tick text")
+            .attr("transform", function (d) { return "translate(" + this.getBBox().height * -1.8 + "," + (this.getBBox().height+40) + ")rotate(-90)"; });
 
             var yAxis = d3.svg.axis()
 			                .scale(yInv)
@@ -80,10 +90,10 @@ $(document).ready(function () {
 			.attr("transform", "translate(" + margin + ",0)")
 			.call(yAxis);
 
-                        line = d3.svg.line()
-                        .x(function (d, i) { return x(d.date * 1000); })
-                        .y(function (d) { return -1 * y(d.value); });
-                        g.selectAll("path").transition().ease("").duration(2000).attr("d", line(data))
+            line = d3.svg.line()
+                        .x(function (d, i) { return x(d.X); })
+                        .y(function (d) { return -1 * y(d.Y); });
+            g.selectAll("path").transition().ease("").duration(2000).attr("d", line(data))
 
         }
     }
