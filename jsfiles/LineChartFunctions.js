@@ -77,7 +77,10 @@ $(document).ready(function () {
             vis.append("g")
 			.attr("class", "axis")
 			.attr("transform", "translate(0," + (h - margin) + ")")
-			.call(xAxis);
+			.call(xAxis)
+            .append("text")
+            .attr("transform", "translate(" + ((w - margin) / 2) + "," + margin + ")")           
+            .text("Received Date"); //Has to be passed on JSON
 
             vis.selectAll(".tick text")
             .attr("transform", function (d) { return "translate(" + this.getBBox().height * -1.8 + "," + (this.getBBox().height+40) + ")rotate(-90)"; });
@@ -88,7 +91,10 @@ $(document).ready(function () {
             vis.append("g")
 			.attr("class", "axis")
 			.attr("transform", "translate(" + margin + ",0)")
-			.call(yAxis);
+			.call(yAxis)
+            .append("text")
+            .attr("transform", "translate(" + (-margin/2) + "," + ((h+margin)/2) + ")rotate(-90)")
+            .text("Number of Articles");  //Has to be passed on JSON
 
             line = d3.svg.line()
                         .x(function (d, i) { return x(d.X); })
