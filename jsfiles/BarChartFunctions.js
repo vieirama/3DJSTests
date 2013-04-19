@@ -167,6 +167,8 @@
             $("#jsonString").val(barChartExample);
         if($('input[name=chartOption]:checked').val() == "stackBarChart")
             $("#jsonString").val(stackBarChartExample2);
+        if($('input[name=chartOption]:checked').val() == "stackedRowChart")
+            $("#jsonString").val(stackBarChartExample2);
     });
 
     // From http://mkweb.bcgsc.ca/circos/guide/tables/
