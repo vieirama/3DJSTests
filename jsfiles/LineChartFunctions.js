@@ -16,6 +16,7 @@ $(document).ready(function () {
     function callPostLineDateChart() {
         $("#warning").text("");
         $("#warning").hide();
+        clearGraphs();
         var json = $("#jsonString").val();
 
         if (json == "") {
@@ -27,7 +28,7 @@ $(document).ready(function () {
             console.log(jsonObject);
 
             var values = [];
-            var w = 1200;
+            var w = 960;
             var h = 600;
             var margin = 130;
             $(".bar").remove();
@@ -143,6 +144,7 @@ $(document).ready(function () {
     function callPostLineChart() {
         $("#warning").text("");
         $("#warning").hide();
+        clearGraphs();
         var json = $("#jsonString").val();
 
         if (json == "") {
