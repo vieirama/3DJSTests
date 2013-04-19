@@ -22,9 +22,9 @@ $(document).ready(function () {
 
 function drawStackChart(data){
 
-    var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    var margin = {top: 20, right: 20, bottom: 130, left: 40},
         width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        height = 600 - margin.top - margin.bottom;
 
     var x = d3.scale.ordinal()
         .rangeRoundBands([0, width], .1);
@@ -38,6 +38,8 @@ function drawStackChart(data){
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom");
+
+    
 
     var yAxis = d3.svg.axis()
         .scale(y)
@@ -66,15 +68,19 @@ function drawStackChart(data){
           x.domain(data.map(function(d) { return d.X; }));
           y.domain([0, d3.max(data, function(d) { return d.total; })]);
 
+
           svg.append("g")
               .attr("class", "x axis")
               .attr("transform", "translate(0," + height + ")")
               .call(xAxis);
-
+          
+          svg.selectAll(".tick text") 
+          .attr("transform", function(d) {return "translate(" + this.getBBox().height * -2 + "," + (this.getBBox().height + 40) + ")rotate(-45)";});
+        
           svg.append("g")
               .attr("class", "y axis")
               .call(yAxis)
-            .append("text")
+              .append("text")
               .attr("transform", "rotate(-90)")
               .attr("y", 6)
               .attr("dy", ".71em")
@@ -83,13 +89,13 @@ function drawStackChart(data){
 
           var state = svg.selectAll(".item")
               .data(data)
-            .enter().append("g")
+              .enter().append("g")
               .attr("class", "g")
               .attr("transform", function(d) { return "translate(" + x(d.X) + ",0)"; });
 
           state.selectAll("rect")
               .data(function(d) { return d.items; })
-                .enter().append("rect")
+              .enter().append("rect")
               .attr("width", x.rangeBand())
               .attr("y", function(d) { return y(d.y1); })
               .attr("height", function(d) { return y(d.y0) - y(d.y1); })
@@ -97,7 +103,7 @@ function drawStackChart(data){
 
           var legend = svg.selectAll(".legend")
               .data(color.domain().slice().reverse())
-            .enter().append("g")
+              .enter().append("g")
               .attr("class", "legend")
               .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
@@ -154,7 +160,7 @@ function buildXRef(data) {
 
     for(var i = 0; i < data.length; i++) {
         if(xRef[data[i].X] == undefined) {
-            xRef[data[i].X] = data[i].Xid;
+            xRef[data[i].X] = data[i].XId;
         }
     }
     return xRef;
@@ -198,7 +204,7 @@ function buildXZRef(data, xRef, zRef) {
 
 function getXZRefValue(data, xRef, zRef) {
     for(var i = 0; i < data.length; i++) {
-        if(data[i].Xid == xRef && data[i].ZId == zRef)
+        if(data[i].XId == xRef && data[i].ZId == zRef)
             //return [xRef, zRef, data[i].Y];
         return data[i].Y;
     }
