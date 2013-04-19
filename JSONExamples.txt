@@ -71,3 +71,73 @@ Examples for pie chart
 }
 
 { dataset: [3, 6, 2, 7, 5, 2, 1, 0, 8, 9, 2, 5, 7] }
+
+Example for bar stack chart
+{
+    "dataset": [
+        {
+            "X": "C1-CP Flow",
+            "Xid": "2328305010",
+            "Y": "359.0",
+            "YId": "0",
+            "Z": "TV",
+            "ZId": "36539757"
+        },
+        {
+            "X": "C1-CP Flow",
+            "Xid": "2328305010",
+            "Y": "1898.0",
+            "YId": "0",
+            "Z": "News Web Sites",
+            "ZId": "36539760"
+        },
+        {
+            "X": "C1-CP Flow",
+            "Xid": "2328305010",
+            "Y": "1458.0",
+            "YId": "0",
+            "Z": "Daily Newspapers",
+            "ZId": "36539762"
+        },
+        {
+            "X": "P-C1 testing 1-iphone",
+            "Xid": "69216626",
+            "Y": "24.0",
+            "YId": "0",
+            "Z": "Blogs",
+            "ZId": "36539759"
+        },
+        {
+            "X": "CP-C1 testing 1-iphone",
+            "Xid": "69216626",
+            "Y": "10.0",
+            "YId": "0",
+            "Z": "Online Version",
+            "ZId": "36539761"
+        },
+        {
+            "X": "CP-C1 testing 2-Storm",
+            "Xid": "69216627",
+            "Y": "211.0",
+            "YId": "0",
+            "Z": "News Web Sites",
+            "ZId": "36539760"
+        },
+        {
+            "X": "CP-C1 testing 4-Samsung",
+            "Xid": "70759437",
+            "Y": "33.0",
+            "YId": "0",
+            "Z": "News Web Sites",
+            "ZId": "36539760"
+        },
+        {
+            "X": "MDW Test - CP",
+            "Xid": "60904693",
+            "Y": "5.0",
+            "YId": "0",
+            "Z": "Radio",
+            "ZId": "36539758"
+        }
+    ]
+}
