@@ -70,7 +70,7 @@ $(document).ready(function () {
 			.call(xAxis)
             .append("text")
             .attr("transform", "translate(430,130)")
-            .text("Received Date"); //Has to be passed on JSON
+            .text(jsonObject.XAxisLabel);
 
             var AxisXtext = vis.selectAll(".tick text")
             .attr("transform", function (d) { return "translate(" + this.getBBox().height * -1 + "," + (this.getBBox().height + 40) + ")rotate(-90)"; })
@@ -103,7 +103,7 @@ $(document).ready(function () {
 			.call(yAxis)
             .append("text")
             .attr("transform", "translate(-60," + ((h + margin - 50) / 2) + ")rotate(-90)")
-            .text("Number of Articles");  //Has to be passed on JSON
+            .text(jsonObject.YAxisLabel); 
 
             var g = vis.append("svg:g")
             .attr("transform", "translate(0, " + (h) + ")");
@@ -124,9 +124,9 @@ $(document).ready(function () {
             .attr("class", "legend")
             .attr("height", 100)
             .attr("width", 100)
-            .text("Frequency Trend") //NEEDS TO BE ADDED TO JSON
+            .text(jsonObject.title)
             .attr("x", w / 2)
-            .attr("y", 70)
+            .attr("y", 100)
             .attr("text-anchor", "middle")
             .attr("font-size", "36px");
 
@@ -135,9 +135,9 @@ $(document).ready(function () {
             .attr("class", "legend")
             .attr("height", 100)
             .attr("width", 100)
-            .text("Grouped by Subscriptions") //NEEDS TO BE ADDED TO JSON
+            .text(jsonObject.subtitle)
             .attr("x", w / 2)
-            .attr("y", 100)
+            .attr("y", 130)
             .attr("text-anchor", "middle")
             .attr("font-size", "20px");
 
@@ -153,7 +153,7 @@ $(document).ready(function () {
             .attr("class", "legend")
             .attr("height", 100)
             .attr("width", 100)
-            .text("Number of Articles") //NEEDS TO BE ADDED TO JSON
+            .text(jsonObject.YAxisLabel)
             .attr("x", w / 2 - 40)
             .attr("y", 784)
             .attr("text-anchor", "left")
