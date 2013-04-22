@@ -73,7 +73,7 @@ $(document).ready(function () {
             .text(jsonObject.XAxisLabel);
 
             var AxisXtext = vis.selectAll(".tick text")
-            .attr("transform", function (d) { return "translate(" + this.getBBox().height * -1 + "," + (this.getBBox().height + 40) + ")rotate(-90)"; })
+            .attr("transform", function (d) { return "translate(" + this.getBBox().height * -0.6 + "," + (this.getBBox().height + 40) + ")rotate(-90)"; })
             .on("mouseover", function (d, i) {
                 d3.select(points[0][i]).transition()
                             .duration(300)
@@ -109,7 +109,7 @@ $(document).ready(function () {
             .attr("transform", "translate(0, " + (h) + ")");
 
             var line = d3.svg.line()
-            .x(function (d, i) { return x(d.X); })
+            .x(function (d, i) { return x(d.X) + (x.rangeBand() / 2); })
             .y(function (d) { return -1 * margin; });
             //.y(function (d) { return -1 * y(d.value); });
 
@@ -167,7 +167,7 @@ $(document).ready(function () {
 
             var points = g.selectAll('circle.mark').data(data).enter().append('svg:circle')
             .attr('class', 'mark')
-            .attr('cx', function (d, i) { return x(d.X); })
+            .attr('cx', function (d, i) { return x(d.X) + (x.rangeBand() / 2); })
             .attr('cy', function (d) { return -1 * margin; })
             .attr('r', 4)
             .on("click", function (d, i) {
@@ -204,14 +204,14 @@ $(document).ready(function () {
 
 
             line = d3.svg.line()
-                        .x(function (d, i) { return x(d.X); })
+                        .x(function (d, i) { return x(d.X) + (x.rangeBand() / 2); })
                         .y(function (d) { return -1 * y(d.Y); });
 
 
             g.selectAll("path").transition().ease("").duration(2000).attr("d", line(data))
 
             points.transition().ease("").duration(2000)
-            .attr('cx', function (d, i) { return x(d.X); })
+            .attr('cx', function (d, i) { return x(d.X) + (x.rangeBand() / 2); })
             .attr('cy', function (d) { return -1 * y(d.Y); });
 
         }
