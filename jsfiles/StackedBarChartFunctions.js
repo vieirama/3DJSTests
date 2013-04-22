@@ -32,8 +32,9 @@ function drawStackChart(data){
     var y = d3.scale.linear()
         .rangeRound([height, 0]);
 
-    var color = d3.scale.ordinal()
-        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+    var color = d3.scale.category10()
+    //d3.scale.ordinal()
+    //    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
     var xAxis = d3.svg.axis()
         .scale(x)
@@ -111,14 +112,66 @@ function drawStackChart(data){
               .attr("x", width - 18)
               .attr("width", 18)
               .attr("height", 18)
-              .style("fill", color);
+              .style("fill", color)
+              .on("mouseover", function (d, i) {
+                  for (var j = 0; j < legendRects.length; j++) {
+                      //for (var k = legendRects[j].length - 1; k > -1 ; k--) {
+                      for (var k = 0; k < legendRects[j].length; k++) {
+                          if (k == legendRects[j].length - i-1)
+                              d3.select(legendRects[j][k]).transition()
+                                             .duration(300)
+                                             .attr("transform", "translate(-" + x.rangeBand() * 0.05 + ",0)scale(1.1,1)");
+                      } 
+                  }
+                  d3.select(legend[0][i]).transition().ease("").duration(300)
+                .style("font-size", "15px");
+              })
+            .on("mouseout", function (d, i) {
+                for (var j = 0; j < legendRects.length; j++) {
+                    for (var k = 0; k < legendRects[j].length; k++) {
+                        if (k == legendRects[j].length - i - 1)
+                            d3.select(legendRects[j][k]).transition()
+                                    .ease("elastic")
+                                   .duration(600)
+                                   .attr("transform", "translate(0,0)scale(1,1)");
+                    }
+                }
+                d3.select(legend[0][i]).transition().ease("").duration(300)
+                    .style("font-size", "10px");
+            });
 
           legend.append("text")
               .attr("x", width - 24)
               .attr("y", 9)
               .attr("dy", ".35em")
               .style("text-anchor", "end")
-              .text(function(d) { return d; });
+              .text(function (d) { return d; })
+              .on("mouseover", function (d, i) {
+                  for (var j = 0; j < legendRects.length; j++) {
+                      //for (var k = legendRects[j].length - 1; k > -1 ; k--) {
+                      for (var k = 0; k < legendRects[j].length; k++) {
+                          if (k == legendRects[j].length - i - 1)
+                              d3.select(legendRects[j][k]).transition()
+                                             .duration(300)
+                                             .attr("transform", "translate(-" + x.rangeBand() * 0.05 + ",0)scale(1.1,1)");
+                      }
+                  }
+                  d3.select(this).transition().ease("").duration(300)
+                .style("font-size", "15px");
+              })
+            .on("mouseout", function (d, i) {
+                for (var j = 0; j < legendRects.length; j++) {
+                    for (var k = 0; k < legendRects[j].length; k++) {
+                        if (k == legendRects[j].length - i - 1)
+                            d3.select(legendRects[j][k]).transition()
+                                    .ease("elastic")
+                                   .duration(600)
+                                   .attr("transform", "translate(0,0)scale(1,1)");
+                    }
+                }
+                d3.select(this).transition().ease("").duration(300)
+                    .style("font-size", "10px");
+            });
 
 
           var legendRects = item.selectAll("rect");
@@ -129,30 +182,24 @@ function drawStackChart(data){
           })
           .on("mouseover", function (d, i) {
             d3.select(this).transition()
-                   .duration(300);
-                   //.attr("d", arcOver);
-            //d3.select(legendRects[0][i]).transition().ease("").duration(200)
-              //  .attr("width", 20)
-              //  .attr("height", 20)
-              //  .attr("x", 20)
-              //  .attr("y", (i * 30) - 5);
+                   .duration(300)
+                   .attr("transform", "translate(-" + x.rangeBand() * 0.05 + ",0)scale(1.1,1)")
+//                .attr("x", -10)
+//                .attr("width", x.rangeBand()+20);
             d3.select(legend[0][legend[0].length - i - 1]).transition().ease("").duration(300)
                 .style("font-size", "15px");
-        })
-        .on("mouseout", function (d, i) {
-            d3.select(this).transition()
-                .ease("elastic")
-               .duration(600)
-               //.attr("d", arc);
-           // d3.select(legendRects[0][i]).transition().ease("").duration(200)
-           //     .attr("width", 10)
-           //     .attr("height", 10)
-           // .attr("x", 25)
-           //   .attr("y", i * 30);
-            d3.select(legend[0][legend[0].length - i - 1]).transition().ease("").duration(300)
-                .style("font-size", "10px");
-        })
-        .style("cursor", "pointer");
+            })
+            .on("mouseout", function (d, i) {
+                d3.select(this).transition()
+                    .ease("elastic")
+                   .duration(600)
+                   .attr("transform", "translate(0,0)scale(1,1)")
+//                    .attr("x", 0)
+//                    .attr("width", x.rangeBand());
+                d3.select(legend[0][legend[0].length - i - 1]).transition().ease("").duration(300)
+                    .style("font-size", "10px");
+            })
+            .style("cursor", "pointer");
     //});
 
 }
