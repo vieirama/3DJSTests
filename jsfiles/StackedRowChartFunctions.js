@@ -120,6 +120,7 @@ function drawStackRowChart(data){
                           cont++;
                           totalWidth = 600;
                        }  
+                       
                       return "translate(" + totalWidth + ", " + aux + ")"; }
                 );
 
