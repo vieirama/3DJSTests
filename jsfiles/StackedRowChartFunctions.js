@@ -50,20 +50,14 @@ function drawStackRowChart(data){
         .append("g")
         .attr("transform", "translate(" + 200 + "," + margin.top  + ")");
 
-     var lgdSVG = d3.select("#legend")
-                  .append("svg")
-                  .append("g")
-                  .attr("transform", "translate(" + 10 + "," + margin.top  + ")"); 
-
     data = transformData(data);    
-    //d3.csv("data.csv", function(error, data) {
-          color.domain(d3.keys(data[0]).filter(function(key) { return key !== "X"; }));
+    color.domain(d3.keys(data[0]).filter(function(key) { return key !== "X"; }));
 
-         data.forEach(function(d) {
-            var x0 = 0;
-            d.items = color.domain().map(function(name) { return {name: name, x0: x0, x1: x0 += +d[name]}; });
-            d.total = d.items[d.items.length - 1].x1;
-          });
+    data.forEach(function(d) {
+        var x0 = 0;
+        d.items = color.domain().map(function(name) { return {name: name, x0: x0, x1: x0 += +d[name]}; });
+        d.total = d.items[d.items.length - 1].x1;
+    });
 
           //data.sort(function(a, b) { return b.total - a.total; });
 
@@ -80,13 +74,9 @@ function drawStackRowChart(data){
               .attr("class", "x axis")
               .call(xAxis)
             .append("text")
-              //.attr("transform", "rotate(-90)")
               .attr("x", 600)
               .attr("dx", ".71em")
               .style("text-anchor", "end");
-              //.text("News Items");
-
-
 
           var state = svg.selectAll(".item")
               .data(data)
