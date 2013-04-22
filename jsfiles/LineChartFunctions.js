@@ -42,9 +42,11 @@ $(document).ready(function () {
             data = jsonObject.dataset;
             data.sort(function (a, b) { return d3.ascending(a.X, b.X); });
 
-            var y = d3.scale.linear().domain([0, d3.max(data, function (d) { return d.Y; })]).range([0 + margin, h - margin]),
-            yInv = d3.scale.linear().domain([0, d3.max(data, function (d) { return d.Y; })]).range([h - margin, 0 + margin]),
-            //x = d3.scale.linear().domain([0, data.length - 1]).range([0 + margin, w - margin]);
+            var maxValue = d3.max(data, function (d) { return d.Y; });
+
+            var y = d3.scale.linear().domain([0, maxValue + maxValue / jsonObject.dataset.length]).range([0 + margin, h - margin]),
+            yInv = d3.scale.linear().domain([0, maxValue + maxValue / jsonObject.dataset.length]).range([h - margin, 0 + margin]),
+
             x = d3.scale.ordinal().rangeRoundBands([0 + margin, w - margin])
 	            .domain(data.map(function (d) { return d.X; }));
 
@@ -52,6 +54,14 @@ $(document).ready(function () {
 						.append("svg")
                         .attr("width", w)
 						.attr("height", h);
+
+
+            var background = vis.append("rect")
+	          .attr("x", margin)
+              .attr("y", margin)
+	          .attr("width", w - margin * 2)
+	          .attr("height", h - margin * 2)
+	          .style("fill", "white")
 
             var formatTime = d3.time.format("%m-%d-%Y");
 
@@ -70,6 +80,7 @@ $(document).ready(function () {
 			.call(xAxis)
             .append("text")
             .attr("transform", "translate(430,130)")
+            .style("font-weight", "bold")
             .text(jsonObject.XAxisLabel);
 
             var AxisXtext = vis.selectAll(".tick text")
@@ -94,7 +105,8 @@ $(document).ready(function () {
             });
 
             var yAxis = d3.svg.axis()
-                            .tickSize(-w + 2 * margin, 50, 3)
+                            .ticks(10)
+                            .tickSize(-w + 2 * margin, 50, 3)                            
 			                .scale(yInv)
                             .tickFormat(d3.format(".2s"))
 			                .orient("left");
@@ -105,6 +117,7 @@ $(document).ready(function () {
 			.call(yAxis)
             .append("text")
             .attr("transform", "translate(-60," + ((h + margin - 50) / 2) + ")rotate(-90)")
+            .style("font-weight", "bold")
             .text(jsonObject.YAxisLabel);
 
             var AxisYtext = vis.selectAll(".y .tick text").attr("transform", "translate(-10,0)")
