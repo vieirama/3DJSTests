@@ -100,7 +100,7 @@ function updateChart(JSONdata) {
     .attr("fill", function (d, i) { return color(i); })
     .attr("d", arc)
     .each(function (d) { this._current = d })
-
+    .style("cursor", "pointer");
 
 
     
