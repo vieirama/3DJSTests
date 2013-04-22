@@ -48,7 +48,12 @@ function drawStackRowChart(data){
         .attr("height",  width + margin.top + margin.bottom)
         .attr("class", "stackChartAxisText")
         .append("g")
-        .attr("transform", "translate(" + 200 + "," + margin.top + ")");
+        .attr("transform", "translate(" + 200 + "," + margin.top  + ")");
+
+     var lgdSVG = d3.select("#legend")
+                  .append("svg")
+                  .append("g")
+                  .attr("transform", "translate(" + 10 + "," + margin.top  + ")"); 
 
     data = transformData(data);    
     //d3.csv("data.csv", function(error, data) {
@@ -97,23 +102,39 @@ function drawStackRowChart(data){
               .attr("width", function(d) { return x(d.x1) - x(d.x0); })
               .style("fill", function(d) { return color(d.name); });
 
+        var constHeightLegendRect = 45;
+        var constHeightLegendText = 37;
         var totalWidth = 0;
+
+        var aux = 0;
+        var cont = 0;
+        var elems = 0;
         var legend = svg.selectAll(".legend")
               .data(color.domain().slice().reverse())
               .enter().append("g")
               .attr("class", "legend")
-              .attr("transform", function(d, i) { console.log(d); console.log("First"); console.log(totalWidth); console.log(i); console.log(d.length); if(i == 0) totalWidth = 0; else totalWidth += d.length * 17; console.log("Last"); console.log(totalWidth); console.log(i); console.log(d.length); return "translate(" + totalWidth + ", 0)"; });
+              .attr("transform", function(d, i) { 
+                      totalWidth = ( i % 6 )  * 150;
+                       if(totalWidth >= 750){
+                          aux = ( i  % 6 )  + 30;
+                          cont++;
+                          totalWidth = 600;
+                       }  
+                       
+                      return "translate(" + totalWidth + ", " + aux + ")"; }
+                );
+
 
           legend.append("rect")
              .attr("x", 0 )
-              .attr("y" , -40)
+              .attr("y" , - ( constHeightLegendRect * ( Math.ceil(legend[0].length / 5 ))))
               .attr("height", 18)
               .attr("width", 18)
               .style("fill", color);
 
        legend.append("text")
               .attr("x", 25 )
-              .attr("y", -25  )
+              .attr("y", - ( constHeightLegendText * ( Math.ceil(legend[0].length / 5 ))))
               .attr("d", ".35em")
               .text(function(d) { return d; });
 
