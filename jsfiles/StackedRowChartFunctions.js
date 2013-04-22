@@ -124,6 +124,7 @@ function drawStackRowChart(data){
                       return "translate(" + totalWidth + ", " + aux + ")"; }
                 );
 
+
           legend.append("rect")
              .attr("x", 0 )
               .attr("y" , - ( constHeightLegendRect * ( Math.ceil(legend[0].length / 5 ))))
