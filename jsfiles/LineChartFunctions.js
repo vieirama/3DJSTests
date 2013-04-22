@@ -73,7 +73,8 @@ $(document).ready(function () {
             .text(jsonObject.XAxisLabel);
 
             var AxisXtext = vis.selectAll(".tick text")
-            .attr("transform", function (d) { return "translate(" + this.getBBox().height * -1 + "," + (this.getBBox().height + 40) + ")rotate(-90)"; })
+            .attr("text-anchor", "middle")
+            .attr("transform", function (d) { return "translate(" + this.getBBox().height * -0.5 + "," + (this.getBBox().height + 40) + ")rotate(-90)"; })
             .on("mouseover", function (d, i) {
                 d3.select(points[0][i]).transition()
                             .duration(300)
@@ -95,6 +96,7 @@ $(document).ready(function () {
             var yAxis = d3.svg.axis()
                             .tickSize(-w + 2 * margin, 50, 3)
 			                .scale(yInv)
+                            .tickFormat(d3.format(".2s"))
 			                .orient("left");
 
             vis.append("g")
@@ -103,13 +105,15 @@ $(document).ready(function () {
 			.call(yAxis)
             .append("text")
             .attr("transform", "translate(-60," + ((h + margin - 50) / 2) + ")rotate(-90)")
-            .text(jsonObject.YAxisLabel); 
+            .text(jsonObject.YAxisLabel);
+
+            var AxisYtext = vis.selectAll(".y .tick text").attr("transform", "translate(-10,0)")
 
             var g = vis.append("svg:g")
             .attr("transform", "translate(0, " + (h) + ")");
 
             var line = d3.svg.line()
-            .x(function (d, i) { return x(d.X); })
+            .x(function (d, i) { return x(d.X) + (x.rangeBand() / 2); })
             .y(function (d) { return -1 * margin; });
             //.y(function (d) { return -1 * y(d.value); });
 
@@ -167,7 +171,8 @@ $(document).ready(function () {
 
             var points = g.selectAll('circle.mark').data(data).enter().append('svg:circle')
             .attr('class', 'mark')
-            .attr('cx', function (d, i) { return x(d.X); })
+            .style("cursor", "pointer")
+            .attr('cx', function (d, i) { return x(d.X) + (x.rangeBand() / 2); })
             .attr('cy', function (d) { return -1 * margin; })
             .attr('r', 4)
             .on("click", function (d, i) {
@@ -204,14 +209,14 @@ $(document).ready(function () {
 
 
             line = d3.svg.line()
-                        .x(function (d, i) { return x(d.X); })
+                        .x(function (d, i) { return x(d.X) + (x.rangeBand() / 2); })
                         .y(function (d) { return -1 * y(d.Y); });
 
 
             g.selectAll("path").transition().ease("").duration(2000).attr("d", line(data))
 
             points.transition().ease("").duration(2000)
-            .attr('cx', function (d, i) { return x(d.X); })
+            .attr('cx', function (d, i) { return x(d.X) + (x.rangeBand() / 2); })
             .attr('cy', function (d) { return -1 * y(d.Y); });
 
         }
