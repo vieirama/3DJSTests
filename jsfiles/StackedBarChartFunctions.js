@@ -127,7 +127,7 @@ function drawStackChart(data){
                                              .attr("stroke-width", 0.5);
                       } 
                   }
-                  d3.select(legend[0][legend[0].length - i - 1]).select("text").transition().ease("").duration(300)
+                  d3.select(legend[0][i]).select("text").transition().ease("").duration(300)
                 .style("font-size", "15px");
               })
             .on("mouseout", function (d, i) {
@@ -142,7 +142,7 @@ function drawStackChart(data){
                                    .attr("stroke-width", null);
                     }
                 }
-                d3.select(legend[0][legend[0].length - i - 1]).select("text").transition().ease("").duration(300)
+                d3.select(legend[0][i]).select("text").transition().ease("").duration(300)
                     .style("font-size", "10px");
             });
 
