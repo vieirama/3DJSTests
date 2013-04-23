@@ -54,6 +54,8 @@ function drawStackChart(data){
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    $("#graph").append("<label style=\"float: right;\"><input type=\"checkbox\" name=\"sortStackBarChart\"></input>Sort Chart</label>");
+
     data = transformData(data);    
     //d3.csv("data.csv", function(error, data) {
           color.domain(d3.keys(data[0]).filter(function(key) { return key !== "X"; }));
@@ -120,10 +122,12 @@ function drawStackChart(data){
                           if (k == legendRects[j].length - i-1)
                               d3.select(legendRects[j][k]).transition()
                                              .duration(300)
-                                             .attr("transform", "translate(-" + x.rangeBand() * 0.05 + ",0)scale(1.1,1)");
+                                             .attr("transform", "translate(-" + x.rangeBand() * 0.05 + ",0)scale(1.1,1)")
+                                             .attr("stroke", "black")
+                                             .attr("stroke-width", 0.5);
                       } 
                   }
-                  d3.select(legend[0][i]).transition().ease("").duration(300)
+                  d3.select(legend[0][legend[0].length - i - 1]).select("text").transition().ease("").duration(300)
                 .style("font-size", "15px");
               })
             .on("mouseout", function (d, i) {
@@ -133,10 +137,12 @@ function drawStackChart(data){
                             d3.select(legendRects[j][k]).transition()
                                     .ease("elastic")
                                    .duration(600)
-                                   .attr("transform", "translate(0,0)scale(1,1)");
+                                   .attr("transform", "translate(0,0)scale(1,1)")
+                                   .attr("stroke", null)
+                                   .attr("stroke-width", null);
                     }
                 }
-                d3.select(legend[0][i]).transition().ease("").duration(300)
+                d3.select(legend[0][legend[0].length - i - 1]).select("text").transition().ease("").duration(300)
                     .style("font-size", "10px");
             });
 
@@ -145,6 +151,7 @@ function drawStackChart(data){
               .attr("y", 9)
               .attr("dy", ".35em")
               .style("text-anchor", "end")
+              .style("cursor", "default")
               .text(function (d) { return d; })
               .on("mouseover", function (d, i) {
                   for (var j = 0; j < legendRects.length; j++) {
@@ -153,7 +160,9 @@ function drawStackChart(data){
                           if (k == legendRects[j].length - i - 1)
                               d3.select(legendRects[j][k]).transition()
                                              .duration(300)
-                                             .attr("transform", "translate(-" + x.rangeBand() * 0.05 + ",0)scale(1.1,1)");
+                                             .attr("transform", "translate(-" + x.rangeBand() * 0.05 + ",0)scale(1.1,1)")
+                                             .attr("stroke", "black")
+                                             .attr("stroke-width", 0.5);
                       }
                   }
                   d3.select(this).transition().ease("").duration(300)
@@ -166,7 +175,9 @@ function drawStackChart(data){
                             d3.select(legendRects[j][k]).transition()
                                     .ease("elastic")
                                    .duration(600)
-                                   .attr("transform", "translate(0,0)scale(1,1)");
+                                   .attr("transform", "translate(0,0)scale(1,1)")
+                                   .attr("stroke", null)
+                                   .attr("stroke-width", null);
                     }
                 }
                 d3.select(this).transition().ease("").duration(300)
@@ -184,9 +195,13 @@ function drawStackChart(data){
             d3.select(this).transition()
                    .duration(300)
                    .attr("transform", "translate(-" + x.rangeBand() * 0.05 + ",0)scale(1.1,1)")
+                   .attr("stroke", "black")
+                   .attr("stroke-width", 0.5);
 //                .attr("x", -10)
 //                .attr("width", x.rangeBand()+20);
             d3.select(legend[0][legend[0].length - i - 1]).transition().ease("").duration(300)
+                .style("font-size", "15px");
+            d3.select(legend[0][legend[0].length - i - 1]).select("text").transition().ease("").duration(300)
                 .style("font-size", "15px");
             })
             .on("mouseout", function (d, i) {
@@ -194,15 +209,64 @@ function drawStackChart(data){
                     .ease("elastic")
                    .duration(600)
                    .attr("transform", "translate(0,0)scale(1,1)")
+                   .attr("stroke", null)
+                   .attr("stroke-width", null);
 //                    .attr("x", 0)
 //                    .attr("width", x.rangeBand());
                 d3.select(legend[0][legend[0].length - i - 1]).transition().ease("").duration(300)
                     .style("font-size", "10px");
+                d3.select(legend[0][legend[0].length - i - 1]).select("text").transition().ease("").duration(300)
+                .style("font-size", "10px");
             })
             .style("cursor", "pointer");
     //});
 
+      
+      $('input:checkbox[name=sortStackBarChart]').click(function(){
+        sortStackBarChart(x, width, data, svg, xAxis);
+      });
 }
+
+  function sortStackBarChart(x, width, data, svg, xAxis) {
+    var sortTimeout = setTimeout(function() {
+        d3.select("#sortStackBarChart").property("checked", true).each(sortStackBarChart);
+      }, 2000);
+    clearTimeout(sortTimeout);
+    var selected = $('input:checkbox[name=sortStackBarChart]:checked').length > 0;
+    var initialState = false;
+
+    // Copy-on-write since tweens are evaluated after a delay.
+    var x0 = d3.scale.ordinal()
+        .rangeRoundBands([0, width], .1)
+        .domain(data.sort( function(a, b) { 
+          return b.total - a.total; 
+        })
+        .map(function(d) { 
+          return d.X; 
+        }))
+        .copy();
+
+    var transition = svg.transition().duration(750),
+        delay = function(d, i) { 
+          return i * 50; 
+        };
+
+    transition.selectAll(".g")
+        .delay(delay)
+        .attr("transform", function(d) { 
+            if(!selected) {
+              return "translate(" + x(d.X) + ", 0)"; 
+            }
+            else {
+              return "translate(" + x0(d.X) + ", 0)"; 
+            }
+        });
+
+    transition.select(".x.axis")
+        .call(xAxis)
+        .selectAll("g")
+        .delay(delay);
+  }
 
 function transformData(data) {
 
