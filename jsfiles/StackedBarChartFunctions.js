@@ -255,9 +255,11 @@ function drawStackChart(data){
         .delay(delay)
         .attr("transform", function(d) { 
             if(!selected) {
+              xAxis.scale(x);
               return "translate(" + x(d.X) + ", 0)"; 
             }
             else {
+              xAxis.scale(x0);
               return "translate(" + x0(d.X) + ", 0)"; 
             }
         });
