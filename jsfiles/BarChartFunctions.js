@@ -186,11 +186,73 @@
                 var g = svg.selectAll("g")
                     .data(symbols)
                     .enter().append("svg:g")
-                    .attr("class", "symbol");
+                    .attr("class", "symbol")
+                    .attr("transform", function (d, i) { return "translate(0," + (i * h / 4 + 10) + ")"; });
 
-                setTimeout(lines, 0);
+                //setTimeout(lines, 0);
+                myStacked();
                 //setTimeout(horizons, duration);
             });
+
+            function myStacked() {
+                x = d3.time.scale().range([0, w - 60]);
+                y = d3.scale.linear().range([h / 4 - 20, 0]);
+
+                // Compute the minimum and maximum date across symbols.
+                x.domain([
+                    d3.min(symbols, function (d) { return d.values[0].date; }),
+                    d3.max(symbols, function (d) { return d.values[d.values.length - 1].date; })
+                  ]);
+
+                var g = svg.selectAll(".symbol")
+
+                g.each(function (d) {
+                    d3.select(this).append("svg:text")
+                        .attr("x", 12)
+                        .text(d.key);
+
+                    d3.select(this).selectAll(".area")
+                    .data(d3.range(1))
+                    .enter().insert("svg:path", ".line")
+                    .attr("class", "area")
+                });
+
+//                var stack = d3.layout.stack()
+//                  .values(function (d) { return d.values; })
+//                  .x(function (d) { return d.date; })
+//                  .y(function (d) { return d.price; })
+//                  .out(function (d, y0, y) { d.price0 = y0; })
+//                  .order("reverse");
+
+//                stack(symbols);
+
+//                y
+//                  .domain([0, d3.max(symbols[0].values.map(function (d) { return d.price + d.price0; }))])
+//                  .range([h, 0]);
+
+//                line
+//                    .y(function (d) { return y(d.price0); });
+
+//                area
+//                  .y0(function (d) { return y(d.price0); })
+//                  .y1(function (d) { return y(d.price0 + d.price); });
+
+                var t = svg.selectAll(".symbol")
+                  .attr("transform", "translate(0,0)")
+
+                t.select("path.area")
+                    .attr("d", function (d) { return area(d.values); })
+                    .style("fill", function (d) { return color(d.key); })
+
+                t.select("path.line")
+                  //.style("stroke-opacity", function (d, i) { return i < 3 ? 1e-6 : 1; })
+                  .attr("d", function (d) { return line(d.values); });
+
+//                t.select("text")
+//                    .attr("transform", function (d) { d = d.values[d.values.length - 1]; return "translate(" + (w - 60) + "," + y(d.price / 2 + d.price0) + ")"; });
+
+                setTimeout(overlappingArea, 0);
+            }
 
             function lines() {
                 x = d3.time.scale().range([0, w - 60]);
@@ -203,19 +265,19 @@
                   ]);
 
                 var g = svg.selectAll(".symbol")
-                    .attr("transform", function (d, i) { return "translate(0," + (i * h / 4 + 10) + ")"; });
+                //                    .attr("transform", function (d, i) { return "translate(0," + (i * h / 4 + 10) + ")"; });
 
                 g.each(function (d) {
                     var e = d3.select(this);
 
-//                    e.append("svg:path")
-//                        .attr("class", "line");
+                    //                    e.append("svg:path")
+                    //                        .attr("class", "line");
 
-//                    e.append("svg:circle")
-//                        .attr("r", 5)
-//                        .style("fill", function (d) { return color(d.key); })
-//                        .style("stroke", "#000")
-//                        .style("stroke-width", "2px");
+                    //                    e.append("svg:circle")
+                    //                        .attr("r", 5)
+                    //                        .style("fill", function (d) { return color(d.key); })
+                    //                        .style("stroke", "#000")
+                    //                        .style("stroke-width", "2px");
 
                     e.append("svg:text")
                         .attr("x", 12)
@@ -223,132 +285,145 @@
                         .text(d.key);
                 });
 
-//                function draw(k) {
-//                    g.each(function (d) {
-//                        var e = d3.select(this);
-//                        y.domain([0, d.maxPrice]);
 
-//                        e.select("path")
-//                            .attr("d", function (d) { return line(d.values.slice(0, k + 1)); });
 
-//                        e.selectAll("circle, text")
-//                          .data(function (d) { return [d.values[k], d.values[k]]; })
-//                          .attr("transform", function (d) { return "translate(" + x(d.date) + "," + y(d.price) + ")"; });
-//                    });
-//                }
+                //                function draw(k) {
+                //                    g.each(function (d) {
+                //                        var e = d3.select(this);
+                //                        y.domain([0, d.maxPrice]);
 
+                //                        e.select("path")
+                //                            .attr("d", function (d) { return line(d.values.slice(0, k + 1)); });
+
+                //                        e.selectAll("circle, text")
+                //                          .data(function (d) { return [d.values[k], d.values[k]]; })
+                //                          .attr("transform", function (d) { return "translate(" + x(d.date) + "," + y(d.price) + ")"; });
+                //                    });
+                //                }
+
+                //setTimeout(areas, 0);
                 setTimeout(horizons, 0);
 
-//                var k = 1, n = symbols[0].values.length;
-//                d3.timer(function () {
-//                    draw(k);
-//                    if ((k += 2) >= n - 1) {
-//                        draw(n - 1);
-//                        setTimeout(horizons, 500);
-//                        return true;
-//                    }
-//                });
+                //                var k = 1, n = symbols[0].values.length;
+                //                d3.timer(function () {
+                //                    draw(k);
+                //                    if ((k += 2) >= n - 1) {
+                //                        draw(n - 1);
+                //                        setTimeout(horizons, 500);
+                //                        return true;
+                //                    }
+                //                });
             }
 
             function horizons() {
-                svg.insert("svg:defs", ".symbol")
-                    .append("svg:clipPath")
-                    .attr("id", "clip")
-                    .append("svg:rect")
-                    .attr("width", w)
-                    .attr("height", h / 4 - 20);
+                //                svg.insert("svg:defs", ".symbol")
+                //                    .append("svg:clipPath")
+                //                    .attr("id", "clip")
+                //                    .append("svg:rect")
+                //                    .attr("width", w)
+                //                    .attr("height", h / 4 - 20);
 
-                var color = d3.scale.ordinal()
-                    .range(["#c6dbef", "#9ecae1", "#6baed6"]);
+//                var color = d3.scale.ordinal()
+//                    .range(["#c6dbef", "#9ecae1", "#6baed6"]);
 
                 var g = svg.selectAll(".symbol")
-                    .attr("clip-path", "url(#clip)");
+//                    .attr("clip-path", "url(#clip)");
 
-                area.y0(h / 4 - 20);
+//                area.y0(h / 4 - 20);
 
-                g.select("circle").transition()
-                  .duration(duration)
-                  .attr("transform", function (d) { return "translate(" + (w - 60) + "," + (-h / 4) + ")"; })
-                  .remove();
+                //                g.select("circle")//.transition()
+                //                  //.duration(duration)
+                //                  .attr("transform", function (d) { return "translate(" + (w - 60) + "," + (-h / 4) + ")"; })
+                //                  .remove();
 
-                g.select("text").transition()
-                  .duration(duration)
-                  .attr("transform", function (d) { return "translate(" + (w - 60) + "," + (h / 4 - 20) + ")"; })
-                  .attr("dy", "0em");
+//                g.select("text")//.transition()
+//                //.duration(duration)
+//                  .attr("transform", function (d) { return "translate(" + (w - 60) + "," + (h / 4 - 20) + ")"; })
+//                  .attr("dy", "0em");
 
                 g.each(function (d) {
-                    y.domain([0, d.maxPrice]);
+                    //y.domain([0, d.maxPrice]);
 
                     d3.select(this).selectAll(".area")
-                    .data(d3.range(3))
-                  .enter().insert("svg:path", ".line")
+                    .data(d3.range(1))
+                    .enter().insert("svg:path", ".line")
                     .attr("class", "area")
-                    .attr("transform", function (d) { return "translate(0," + (d * (h / 4 - 20)) + ")"; })
-                    .attr("d", area(d.values))
-                    .style("fill", function (d, i) { return color(i); })
-                    .style("fill-opacity", 1e-6);
+//                    .attr("transform", function (d) { return "translate(0," + (d * (h / 4 - 20)) + ")"; })
+//                    .attr("d", area(d.values))
+//                    .style("fill", function (d, i) { return color(i); })
+//                    .style("fill-opacity", 1e-6);
 
-                    y.domain([0, d.maxPrice / 3]);
+//                    y.domain([0, d.maxPrice / 3]);
 
-                    d3.select(this).selectAll(".line").transition()
-                        .duration(duration)
-                        .attr("d", line(d.values))
-                        .style("stroke-opacity", 1e-6);
+//                    d3.select(this).selectAll(".line")
+//                        .attr("d", line(d.values))
+//                        .style("stroke-opacity", 1e-6);
 
-                    d3.select(this).selectAll(".area").transition()
-                        .duration(duration)
+                    d3.select(this).selectAll(".area")
                         .style("fill-opacity", 1)
                         .attr("d", area(d.values))
-                        .each("end", function () { d3.select(this).style("fill-opacity", null); });
+                    //.each("end", function () { d3.select(this).style("fill-opacity", null); });
+
+                    //                    d3.select(this).selectAll(".line").transition()
+                    //                        .duration(duration)
+                    //                        .attr("d", line(d.values))
+                    //                        .style("stroke-opacity", 1e-6);
+
+                    //                    d3.select(this).selectAll(".area").transition()
+                    //                        .duration(duration)
+                    //                        .style("fill-opacity", 1)
+                    //                        .attr("d", area(d.values))
+                    //                        .each("end", function () { d3.select(this).style("fill-opacity", null); });
                 });
 
-                setTimeout(areas, duration + delay);
+                setTimeout(areas, 0);
             }
 
             function areas() {
                 var g = svg.selectAll(".symbol");
 
-                axis.y(h / 4 - 21);
+                //axis.y(h / 4 - 21);
 
-                g.select(".line")
-                    .attr("d", function (d) { return axis(d.values); });
+//                g.select(".line")
+//                    .attr("d", function (d) { return axis(d.values); });
 
                 g.each(function (d) {
-                    y.domain([0, d.maxPrice]);
+                    //y.domain([0, d.maxPrice]);
 
-                    d3.select(this).select(".line").transition()
-                        .duration(duration)
-                        .style("stroke-opacity", 1)
-                        .each("end", function () { d3.select(this).style("stroke-opacity", null); });
+                    d3.select(this).select(".line")//.transition()
+                    //.duration(duration)
+//                        .style("stroke-opacity", 1)
+                    //                        .each("end", function () { d3.select(this).style("stroke-opacity", null); });
 
-                    d3.select(this).selectAll(".area")
-                        .filter(function (d, i) { return i; })
-                      .transition()
-                        .duration(duration)
-                        .style("fill-opacity", 1e-6)
-                        .attr("d", area(d.values))
-                        .remove();
+//                    d3.select(this).selectAll(".area")
+//                        .filter(function (d, i) { return i; })
+//                    //                      .transition()
+//                    //                        .duration(duration)
+//                    //                        .style("fill-opacity", 1e-6)
+//                    //                        .attr("d", area(d.values))
+//                        .remove();
 
-                    d3.select(this).selectAll(".area")
-                        .filter(function (d, i) { return !i; })
-                      .transition()
-                        .duration(duration)
-                        .style("fill", color(d.key))
-                        .attr("d", area(d.values));
+                    //                    d3.select(this).selectAll(".area")
+                    //                        .filter(function (d, i) { return !i; })
+                    //                    //                      .transition()
+                    //                    //                        .duration(duration)
+                    //                        .style("fill", color(d.key))
+                    //                        .attr("d", area(d.values));
                 });
 
-                svg.select("defs").transition()
-                  .duration(duration)
-                  .remove();
+                //                svg.select("defs").transition()
+                //                  .duration(duration)
+                //                  .remove();
 
-                g.transition()
-                  .duration(duration)
-                  .each("end", function () { d3.select(this).attr("clip-path", null); });
+                //                g.transition()
+                //                  .duration(duration)
+                //                  .each("end", function () { d3.select(this).attr("clip-path", null); });
 
-                setTimeout(stackedArea, duration + delay);
+                setTimeout(stackedArea, 0);
             }
 
             function stackedArea() {
+
                 var stack = d3.layout.stack()
                   .values(function (d) { return d.values; })
                   .x(function (d) { return d.date; })
@@ -369,13 +444,15 @@
                   .y0(function (d) { return y(d.price0); })
                   .y1(function (d) { return y(d.price0 + d.price); });
 
-                var t = svg.selectAll(".symbol").transition()
-                  .duration(duration)
+                var t = svg.selectAll(".symbol")//.transition()
+                //.duration(duration)
                   .attr("transform", "translate(0,0)")
-                  .each("end", function () { d3.select(this).attr("transform", null); });
+                //.each("end", function () { d3.select(this).attr("transform", null); });
 
                 t.select("path.area")
-                    .attr("d", function (d) { return area(d.values); });
+                    .attr("d", function (d) { return area(d.values); })
+                    .style("fill", function (d) { return color(d.key); })
+                //.attr("d", function (d) { return area(d.values); })
 
                 t.select("path.line")
                   .style("stroke-opacity", function (d, i) { return i < 3 ? 1e-6 : 1; })
@@ -384,7 +461,7 @@
                 t.select("text")
                     .attr("transform", function (d) { d = d.values[d.values.length - 1]; return "translate(" + (w - 60) + "," + y(d.price / 2 + d.price0) + ")"; });
 
-                setTimeout(streamgraph, duration + delay);
+                setTimeout(overlappingArea, duration + delay);
             }
 
             function streamgraph() {
@@ -437,8 +514,9 @@
                 line
                     .y(function (d) { return y(d.price); });
 
-                var t = g.transition()
-                    .duration(duration);
+                var t = g
+//                .transition()
+//                .duration(duration);
 
                 t.select(".line")
                   .style("stroke-opacity", 1)
@@ -459,11 +537,11 @@
                   .attr("y1", h)
                   .attr("y2", h)
                   .style("stroke-opacity", 1e-6)
-                .transition()
-                  .duration(duration)
+//                .transition()
+//                  .duration(duration)
                   .style("stroke-opacity", 1);
 
-                setTimeout(groupedBar, duration + delay);
+                //setTimeout(groupedBar, duration + delay);
             }
 
             function groupedBar() {
