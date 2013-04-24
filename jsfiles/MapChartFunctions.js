@@ -1,6 +1,8 @@
 $(document).ready(function () {
     $("#submit").click(function () {
-        if($('input[name=chartOption]:checked').val() == "mapChart") {
+        if($('input[name=chartOption]:checked').val() == "USAStatesMapChart"
+              || $('input[name=chartOption]:checked').val() == "CanadaMapChart"
+              || $('input[name=chartOption]:checked').val() == "EuropeMapChart") {
             $("#warning").text("");
             $("#warning").hide();
             clearGraphs();
@@ -14,7 +16,7 @@ $(document).ready(function () {
             else {
                 var jsonObject = eval('(' + json + ')');
                 console.log(jsonObject);
-                drawMapChart(jsonObject.dataset);
+                drawMapChart(jsonObject.dataset, $('input[name=chartOption]:checked').val());
             }
         }
     });
@@ -22,7 +24,7 @@ $(document).ready(function () {
 
   var div = null;
   
-function drawMapChart(data){
+function drawMapChart(data, chartOption){
   var formatTime = d3.time.format("%e %B");
 
 
@@ -33,12 +35,12 @@ function drawMapChart(data){
       .attr("class", "tooltip")
       .style("opacity", 0);
 
- var projection = d3.geo.mercator()
+  var projection = d3.geo.mercator()
 //    .translate([height / 4, width/4])
 //    .scale(width / 2);
- var path = d3.geo.path()
-    .projection(projection)
-    ;
+  var path = d3.geo.path();
+
+  if(chartOption != "USAStatesMapChart") path.projection(projection);
     
   var svg = d3.select("#graph").append("svg")
       .attr("width", width)
@@ -56,18 +58,42 @@ function drawMapChart(data){
       .attr("id", "states");
      //g.selectAll("path")
         
-  d3.json("readme.json", function(json) {
-    g.selectAll("path")
-        .data(json.features)
-      .enter().append("path")
-        .attr("d", path)
-  	  //.attr("class",  function(d) { return (d.properties["name"] == "Illinois" ? "active" : ".features"); })
-        .on("click", click)
-        .on("mouseover",hover );
-
-
-         //hover(div));
-   });
+  if(chartOption == "USAStatesMapChart") {
+    d3.json("USACoverageMap.json", function(json) {
+      g.selectAll("path")
+          .data(json.features)
+          .enter().append("path")
+          .attr("d", path)
+    	  //.attr("class",  function(d) { return (d.properties["name"] == "Illinois" ? "active" : ".features"); })
+          .on("click", click)
+          .on("mouseover",hover);
+     });
+  }
+  else if(chartOption == "CanadaMapChart") {
+    g.attr("transform", "translate(" + (width / 2-200) + "," + height / 2 + ")scale(1.7,1.2)"); //Canada 
+    d3.json("CanadaCoverageMap.json", function(json) {
+      g.selectAll("path")
+          .data(json.features)
+          .enter().append("path")
+          .attr("d", path)
+        //.attr("class",  function(d) { return (d.properties["name"] == "Illinois" ? "active" : ".features"); })
+          .on("click", click)
+          .on("mouseover",hover);
+     });
+  }
+  else if(chartOption == "EuropeMapChart") {
+    g.attr("transform", "translate(" + (-800) + "," + 50 + ")scale(2.5,2.5)"); //Europe
+    d3.json("europeMap.json", function(json) {
+      g.selectAll("path")
+          .data(json.features)
+          .enter().append("path")
+          .attr("d", path)
+        //.attr("class",  function(d) { return (d.properties["name"] == "Illinois" ? "active" : ".features"); })
+          .on("click", click)
+          .on("mouseover",hover);
+     });
+  }
+  
 }
 function click(d) {
   var x, y, k;
@@ -80,7 +106,7 @@ function hover(d){
  div.transition()        
      .duration(200)      
      .style("opacity", .9);      
-  div .html(d.properties["NAME"])  
+  div .html(d.properties["name"])  
       .style("left", (d3.event.pageX) + "px")     
       .style("top", (d3.event.pageY - 28) + "px");                
 }
