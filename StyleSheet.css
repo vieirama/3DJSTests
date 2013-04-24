@@ -115,7 +115,7 @@ div.bar {
 #states {
   fill: #aaa;
   stroke: #fff;
-  stroke-width: 1.5px;
+  stroke-width: 0.5px;
 }
  
 #states .active {
