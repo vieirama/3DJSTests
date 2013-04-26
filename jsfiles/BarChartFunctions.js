@@ -188,7 +188,7 @@
                     .enter().append("svg:g")
                     .attr("class", "symbol");
 
-                setTimeout(lines, 0);
+                setTimeout(lines, duration);
                 //setTimeout(horizons, duration);
             });
 
@@ -208,14 +208,14 @@
                 g.each(function (d) {
                     var e = d3.select(this);
 
-//                    e.append("svg:path")
-//                        .attr("class", "line");
+                    e.append("svg:path")
+                        .attr("class", "line");
 
-//                    e.append("svg:circle")
-//                        .attr("r", 5)
-//                        .style("fill", function (d) { return color(d.key); })
-//                        .style("stroke", "#000")
-//                        .style("stroke-width", "2px");
+                    e.append("svg:circle")
+                        .attr("r", 5)
+                        .style("fill", function (d) { return color(d.key); })
+                        .style("stroke", "#000")
+                        .style("stroke-width", "2px");
 
                     e.append("svg:text")
                         .attr("x", 12)
@@ -223,31 +223,29 @@
                         .text(d.key);
                 });
 
-//                function draw(k) {
-//                    g.each(function (d) {
-//                        var e = d3.select(this);
-//                        y.domain([0, d.maxPrice]);
+                function draw(k) {
+                    g.each(function (d) {
+                        var e = d3.select(this);
+                        y.domain([0, d.maxPrice]);
 
-//                        e.select("path")
-//                            .attr("d", function (d) { return line(d.values.slice(0, k + 1)); });
+                        e.select("path")
+                            .attr("d", function (d) { return line(d.values.slice(0, k + 1)); });
 
-//                        e.selectAll("circle, text")
-//                          .data(function (d) { return [d.values[k], d.values[k]]; })
-//                          .attr("transform", function (d) { return "translate(" + x(d.date) + "," + y(d.price) + ")"; });
-//                    });
-//                }
+                        e.selectAll("circle, text")
+                          .data(function (d) { return [d.values[k], d.values[k]]; })
+                          .attr("transform", function (d) { return "translate(" + x(d.date) + "," + y(d.price) + ")"; });
+                    });
+                }
 
-                setTimeout(horizons, 0);
-
-//                var k = 1, n = symbols[0].values.length;
-//                d3.timer(function () {
-//                    draw(k);
-//                    if ((k += 2) >= n - 1) {
-//                        draw(n - 1);
-//                        setTimeout(horizons, 500);
-//                        return true;
-//                    }
-//                });
+                var k = 1, n = symbols[0].values.length;
+                d3.timer(function () {
+                    draw(k);
+                    if ((k += 2) >= n - 1) {
+                        draw(n - 1);
+                        setTimeout(horizons, 500);
+                        return true;
+                    }
+                });
             }
 
             function horizons() {
@@ -503,7 +501,7 @@
                         .style("fill-opacity", 1);
                 });
 
-                //setTimeout(stackedBar, duration + delay);
+                setTimeout(stackedBar, duration + delay);
             }
 
             function stackedBar() {
@@ -546,7 +544,7 @@
                         .style("stroke-opacity", 1);
                   });
 
-                //setTimeout(transposeBar, duration + symbols[0].values.length * 10 + delay);
+                setTimeout(transposeBar, duration + symbols[0].values.length * 10 + delay);
             }
 
             function transposeBar() {
@@ -587,7 +585,7 @@
                   .duration(duration)
                   .attr("x2", w);
 
-                //setTimeout(donut, duration / 2 + symbols[0].values.length * 10 + delay);
+                setTimeout(donut, duration / 2 + symbols[0].values.length * 10 + delay);
             }
 
             function donut() {
