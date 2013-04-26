@@ -185,3 +185,19 @@ div.tooltip {
 	stroke-width: 1;			/* make the width of the axis lines 1 pixel */
 	shape-rendering: crispEdges;/* make the edges sharp */
 }
+
+.covlabels, .cov text {
+  font: 10px sans-serif;
+}
+
+.dot {
+  stroke: #000;
+}
+
+.cov path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+
