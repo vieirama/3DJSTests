@@ -33,27 +33,27 @@
             dataset = jsonObject.dataset;
 
             var xScale = d3.scale.ordinal()
-            					.domain(dataset.map(function (d) { return d.label; }))
-            					.rangeRoundBands([0, w], 0.05);
+                                .domain(dataset.map(function (d) { return d.label; }))
+                                .rangeRoundBands([0, w], 0.05);
             var yScale = d3.scale.linear()
                         .domain([0, d3.max(dataset, function (d) { return d.value; })])
-            			.range([h - 30, 0]);
+                        .range([h - 30, 0]);
 
             var svg = d3.select("#graph")
-            			.append("svg")
+                        .append("svg")
                         .attr("width", w)
-            			.attr("height", h);
+                        .attr("height", h);
 
             svg.selectAll("rect")
-            	.data(dataset)
-            	.enter()
-            	.append("rect")
-            	.attr("class", "bar")
+                .data(dataset)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
 
-            	.attr("height", function (d) {
-            	    var barHeight = yScale(d.value);
-            	    return h - barHeight + "px";
-            	})
+                .attr("height", function (d) {
+                    var barHeight = yScale(d.value);
+                    return h - barHeight + "px";
+                })
                 .attr("width", function () {
                     var barWidth = 800 / dataset.length - columnPadding;
                     return barWidth + "px";
@@ -61,38 +61,38 @@
                 .attr("x", function (d, i) {
                     return i * (w / dataset.length) + 20;
                 })
-            	.attr("y", function (d) {
-            	    return yScale(d.value) - columnPadding - 20; //h - yScale(d.value)-20;
-            	})
+                .attr("y", function (d) {
+                    return yScale(d.value) - columnPadding - 20; //h - yScale(d.value)-20;
+                })
                 .style("fill", function (d) {
                     return "rgb(" + d.color[0].R + "," + d.color[0].G + "," + d.color[0].B + ")";
                 });
 
             svg.selectAll("text")
-            	.data(dataset)
-            	.enter()
-            	.append("text")
+                .data(dataset)
+                .enter()
+                .append("text")
                 .attr("class", "label")
-            	.text(function (d) {
-            	    return d.value;
-            	})
-            	.attr("text-anchor", "middle")
-            	.attr("x", function (d, i) {
-            	    return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2 + 20;
-            	})
-            	.attr("y", function (d) {
-            	    return yScale(d.value) - columnPadding + 20;
-            	})
-            	.attr("font-family", "sans-serif")
-            	.attr("font-size", "11px")
-            	.attr("fill", "white");
+                .text(function (d) {
+                    return d.value;
+                })
+                .attr("text-anchor", "middle")
+                .attr("x", function (d, i) {
+                    return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2 + 20;
+                })
+                .attr("y", function (d) {
+                    return yScale(d.value) - columnPadding + 20;
+                })
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "11px")
+                .attr("fill", "white");
 
             //   //AXIS
 
 
             var xAxis = d3.svg.axis()
-            			    .scale(xScale)
-            			    .orient("bottom");
+                            .scale(xScale)
+                            .orient("bottom");
 
             svg.append("g")
             .attr("class", "axis")
@@ -102,9 +102,9 @@
 
 
             var yAxis = d3.svg.axis()
-            			    .scale(yScale)
-            			    .orient("left")
-            			    .ticks(5);
+                            .scale(yScale)
+                            .orient("left")
+                            .ticks(5);
 
             svg.append("g")
             .attr("class", "axis")
@@ -133,6 +133,8 @@
             var m = [20, 20, 30, 20],
             w = 800 - m[1] - m[3],
             h = 400 - m[0] - m[2];
+
+            var maxLabelWidth;
 
             var x, y, duration = 1500, delay = 500;
 
@@ -178,6 +180,8 @@
                     s.values.forEach(function (d) { d.date = parse(d.date); d.price = +d.price; });
                     s.maxPrice = d3.max(s.values, function (d) { return d.price; });
                     s.sumPrice = d3.sum(s.values, function (d) { return d.price; });
+                    if (!s.label)
+                        s.label = s.values[0].label;
                 });
 
                 // Sort by maximum price, descending.
@@ -193,17 +197,9 @@
             });
 
             function lines() {
-                x = d3.time.scale().range([0, w - 60]);
-                y = d3.scale.linear().range([h / 4 - 20, 0]);
-
-                // Compute the minimum and maximum date across symbols.
-                x.domain([
-                    d3.min(symbols, function (d) { return d.values[0].date; }),
-                    d3.max(symbols, function (d) { return d.values[d.values.length - 1].date; })
-                  ]);
 
                 var g = svg.selectAll(".symbol")
-                    .attr("transform", function (d, i) { return "translate(0," + (i * h / 4 + 10) + ")"; });
+                    .attr("transform", function (d, i) { return "translate(0," + (i * h / symbols.length + 10) + ")"; });
 
                 g.each(function (d) {
                     var e = d3.select(this);
@@ -220,20 +216,36 @@
                     e.append("svg:text")
                         .attr("x", 12)
                         .attr("dy", ".31em")
-                        .text(d.key);
+                        .text(d.label);
                 });
+
+                // Computed Max Label Width
+                var labelWidthValues = [];
+                d3.selectAll('text')[0].forEach(function (s) { labelWidthValues.push(s.getComputedTextLength()) });
+                maxLabelWidth = Math.max.apply(Math, labelWidthValues);
+
+                x = d3.time.scale().range([0, w - maxLabelWidth]);
+                y = d3.scale.linear().range([h / symbols.length - 20, 0]);
+
+                // Compute the minimum and maximum date across symbols.
+                x.domain([
+                    d3.min(symbols, function (d) { return d.values[0].date; }),
+                    d3.max(symbols, function (d) { return d.values[d.values.length - 1].date; })
+                  ]);
 
                 function draw(k) {
                     g.each(function (d) {
-                        var e = d3.select(this);
-                        y.domain([0, d.maxPrice]);
+                        if (k < d.values.length) {
+                            var e = d3.select(this);
+                            y.domain([0, d.maxPrice]);
 
-                        e.select("path")
+                            e.select("path")
                             .attr("d", function (d) { return line(d.values.slice(0, k + 1)); });
 
-                        e.selectAll("circle, text")
+                            e.selectAll("circle, text")
                           .data(function (d) { return [d.values[k], d.values[k]]; })
                           .attr("transform", function (d) { return "translate(" + x(d.date) + "," + y(d.price) + ")"; });
+                        }
                     });
                 }
 
@@ -253,8 +265,8 @@
                     .append("svg:clipPath")
                     .attr("id", "clip")
                     .append("svg:rect")
-                    .attr("width", w)
-                    .attr("height", h / 4 - 20);
+                    .attr("width", w + m[1])
+                    .attr("height", h / symbols.length - 20);
 
                 var color = d3.scale.ordinal()
                     .range(["#c6dbef", "#9ecae1", "#6baed6"]);
@@ -262,26 +274,26 @@
                 var g = svg.selectAll(".symbol")
                     .attr("clip-path", "url(#clip)");
 
-                area.y0(h / 4 - 20);
+                area.y0(h / symbols.length - 20);
 
                 g.select("circle").transition()
                   .duration(duration)
-                  .attr("transform", function (d) { return "translate(" + (w - 60) + "," + (-h / 4) + ")"; })
+                  .attr("transform", function (d) { return "translate(" + (w - maxLabelWidth) + "," + (-h / symbols.length) + ")"; })
                   .remove();
 
                 g.select("text").transition()
                   .duration(duration)
-                  .attr("transform", function (d) { return "translate(" + (w - 60) + "," + (h / 4 - 20) + ")"; })
+                  .attr("transform", function (d) { return "translate(" + (w - maxLabelWidth) + "," + (h / symbols.length - 23) + ")"; })
                   .attr("dy", "0em");
 
                 g.each(function (d) {
                     y.domain([0, d.maxPrice]);
 
                     d3.select(this).selectAll(".area")
-                    .data(d3.range(3))
+                    .data(d3.range(symbols.length - 1))
                   .enter().insert("svg:path", ".line")
                     .attr("class", "area")
-                    .attr("transform", function (d) { return "translate(0," + (d * (h / 4 - 20)) + ")"; })
+                    .attr("transform", function (d) { return "translate(0," + (d * (h / symbols.length - 20)) + ")"; })
                     .attr("d", area(d.values))
                     .style("fill", function (d, i) { return color(i); })
                     .style("fill-opacity", 1e-6);
@@ -306,7 +318,7 @@
             function areas() {
                 var g = svg.selectAll(".symbol");
 
-                axis.y(h / 4 - 21);
+                axis.y(h / symbols.length - 21);
 
                 g.select(".line")
                     .attr("d", function (d) { return axis(d.values); });
@@ -380,7 +392,7 @@
                   .attr("d", function (d) { return line(d.values); });
 
                 t.select("text")
-                    .attr("transform", function (d) { d = d.values[d.values.length - 1]; return "translate(" + (w - 60) + "," + y(d.price / 2 + d.price0) + ")"; });
+                    .attr("transform", function (d) { d = d.values[d.values.length - 1]; return "translate(" + (w - maxLabelWidth) + "," + y(d.price / 2 + d.price0) + ")"; });
 
                 setTimeout(streamgraph, duration + delay);
             }
@@ -410,7 +422,7 @@
                   .attr("d", function (d) { return line(d.values); });
 
                 t.select("text")
-                    .attr("transform", function (d) { d = d.values[d.values.length - 1]; return "translate(" + (w - 60) + "," + y(d.price / 2 + d.price0) + ")"; });
+                    .attr("transform", function (d) { d = d.values[d.values.length - 1]; return "translate(" + (w - maxLabelWidth) + "," + y(d.price / 2 + d.price0) + ")"; });
 
                 setTimeout(overlappingArea, duration + delay);
             }
@@ -448,12 +460,12 @@
 
                 t.select("text")
                   .attr("dy", ".31em")
-                  .attr("transform", function (d) { d = d.values[d.values.length - 1]; return "translate(" + (w - 60) + "," + y(d.price) + ")"; });
+                  .attr("transform", function (d) { d = d.values[d.values.length - 1]; return "translate(" + (w - maxLabelWidth) + "," + y(d.price) + ")"; });
 
                 svg.append("svg:line")
                   .attr("class", "line")
                   .attr("x1", 0)
-                  .attr("x2", w - 60)
+                  .attr("x2", w - maxLabelWidth)
                   .attr("y1", h)
                   .attr("y2", h)
                   .style("stroke-opacity", 1e-6)
@@ -467,7 +479,7 @@
             function groupedBar() {
                 x = d3.scale.ordinal()
                   .domain(symbols[0].values.map(function (d) { return d.date; }))
-                  .rangeBands([0, w - 60], .1);
+                  .rangeBands([0, w - maxLabelWidth], .1);
 
                 var x1 = d3.scale.ordinal()
                   .domain(symbols.map(function (d) { return d.key; }))
@@ -505,7 +517,7 @@
             }
 
             function stackedBar() {
-                x.rangeRoundBands([0, w - 60], .1);
+                x.rangeRoundBands([0, w - maxLabelWidth], .1);
 
                 var stack = d3.layout.stack()
                   .values(function (d) { return d.values; })
@@ -527,7 +539,7 @@
 
                 t.select("text")
                   .delay(symbols[0].values.length * 10)
-                  .attr("transform", function (d) { d = d.values[d.values.length - 1]; return "translate(" + (w - 60) + "," + y(d.price / 2 + d.price0) + ")"; });
+                  .attr("transform", function (d) { d = d.values[d.values.length - 1]; return "translate(" + (w - maxLabelWidth) + "," + y(d.price / 2 + d.price0) + ")"; });
 
                 t.selectAll("rect")
                   .delay(function (d, i) { return i * 10; })
@@ -850,8 +862,8 @@
 
 
 
-    //    var dataset = [];  						 //Initialize empty array
-    //    for (var i = 0; i < 25; i++) {			 //Loop 25 times
+    //    var dataset = [];                          //Initialize empty array
+    //    for (var i = 0; i < 25; i++) {             //Loop 25 times
     //        var newNumber = Math.random() * 30;  //New random number (0-30)
     //        dataset = dataset.concat(newNumber); //Add new number to array
     //    }
