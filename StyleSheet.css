@@ -186,7 +186,7 @@ div.tooltip {
 	shape-rendering: crispEdges;/* make the edges sharp */
 }
 
-.covlabels, .cov text {
+.covlabelX, .covlabelY, .covAxisX text, .covAxisY text {
   font: 10px sans-serif;
 }
 
@@ -194,10 +194,21 @@ div.tooltip {
   stroke: #000;
 }
 
-.cov path {
+.covAxisX .domain {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
+}
+
+.covAxisY .domain {
+  display: none;
+}
+
+.covAxisY line {
+	fill: none;					/* don't fill areas bounded by the axis line */
+	stroke: black;				/* make the axis line grey */
+	stroke-width: 1;			/* make the width of the axis lines 1 pixel */
+	shape-rendering: crispEdges;/* make the edges sharp */
 }
 
 

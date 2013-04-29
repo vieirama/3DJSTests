@@ -765,6 +765,11 @@
             $("#jsonString").val(stackBarChartExample2);
         if ($('input[name=chartOption]:checked').val() == "barChart3D")
             $("#jsonString").val(barChartExample);
+        if ($('input[name=chartOption]:checked').val() == "faceChart") {
+            d3.json("Coverage.json", function (data) {
+                $("#jsonString").val(JSON.stringify(data));
+            });
+        }
     });
 
     // From http://mkweb.bcgsc.ca/circos/guide/tables/

@@ -1,11 +1,7 @@
 $(document).ready(function () {
-    $("#submit").die("click").live("click", function () {
+    $("#submit").click(function () {
         if ($('input[name=chartOption]:checked').val() == "faceChart") {
-
-            // Load the data.
-            d3.json("Coverage.json", function (data) {
-                callPostFaceChart(data);
-            });
+            callPostFaceChart();
         }
     });
 
@@ -21,15 +17,20 @@ $(document).ready(function () {
     function y(d) { return d.rMVOP; }
     function radius(d) { return d.rMVOP; }
 
-    function callPostFaceChart(dataJSON) {
+    function callPostFaceChart() {
+
+        var dataJSON = eval('(' + $("#jsonString").val() + ')');
+
         clearGraphs();
 
         var minCirclesRadius = 0.6;
         // Chart dimensions.
-        var margin = { top: 100, right: 19.5, bottom: 19.5, left: 39.5 },
-        width = 960 - margin.right,
-        height = 500 - margin.top - margin.bottom;
-        
+        var w = 960;
+        var h = 500;
+        var margin = { top: 100, right: 19.5, bottom: 19.5, left: 50 },
+        width = w - margin.right,
+        height = h - margin.top - margin.bottom;
+
         for (var i = 0; i < dataJSON.length; i++) {
             dataJSON[i].fulldate = parseDate(dataJSON[i].fulldate);
         }
@@ -39,7 +40,7 @@ $(document).ready(function () {
 
         var minValueradius = d3.min(dataJSON, function (d) { return d.rMVMP; });
         var maxValueradius = d3.max(dataJSON, function (d) { return d.rMVMP; });
-        
+
         var minValuedate = d3.min(dataJSON, function (d) { return d.fulldate; });
         var maxValuedate = d3.max(dataJSON, function (d) { return d.fulldate; });
 
@@ -53,7 +54,10 @@ $(document).ready(function () {
 
         // The x & y axes.
         var xAxis = d3.svg.axis().orient("bottom").scale(xScale).ticks(12),
-        yAxis = d3.svg.axis().scale(yScale).orient("left");
+        yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient("left")
+                .tickSize(10, 10, 3);
 
         // Create the SVG container and set the origin.
         var svg = d3.select("#graph").append("svg")
@@ -64,18 +68,18 @@ $(document).ready(function () {
 
         // Add the x-axis.
         svg.append("g")
-        .attr("class", "x axis cov")
+        .attr("class", "covAxisX")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
 
         // Add the y-axis.
         svg.append("g")
-        .attr("class", "y axis cov")
+        .attr("class", "covAxisY")
         .call(yAxis);
 
         // Add an x-axis label.
         svg.append("text")
-        .attr("class", "covlabels")
+        .attr("class", "covlabelX")
         .attr("text-anchor", "end")
         .attr("x", width)
         .attr("y", height - 6)
@@ -83,13 +87,13 @@ $(document).ready(function () {
 
         // Add a y-axis label.
         svg.append("text")
-        .attr("class", "covlabels")
+        .attr("class", "covlabelY")
         .attr("text-anchor", "end")
         .attr("y", 6)
         .attr("dy", ".75em")
-        .attr("transform", "rotate(-90)")
+        .attr("transform", "translate(0," + (-h - h / 2) + ")rotate(-90)")
         .text("Company value (billions of today's dollars)");
-    
+
         // Add a dot per nation. Initialize the data at 1800, and set the colors.
         var dot = svg.append("g")
               .attr("class", "dots")
@@ -134,7 +138,8 @@ $(document).ready(function () {
             yScale.domain([minValue, maxValue]);
 
             var t = svg.transition().duration(3000);
-            t.select(".y.axis").call(yAxis);
+            t.select(".covAxisY").call(yAxis);
+            t.select(".covlabelY").attr("transform", "rotate(-90)translate(0,0)");
             t.selectAll(".dot").call(position);
         }
 
