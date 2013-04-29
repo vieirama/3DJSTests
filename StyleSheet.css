@@ -211,4 +211,13 @@ div.tooltip {
 	shape-rendering: crispEdges;/* make the edges sharp */
 }
 
+.covTooltip {  
+  width: 104px;
+  height: 45px;
+  text-align: center;
+  padding-top: 16px;
+  font-size: 12px;
+}
+
+
 

@@ -103,10 +103,28 @@ $(document).ready(function () {
               .attr("class", "dot")
               .call(position)
               .sort(order)
-              .style("fill", function (d) { return colorScale(x(d)); });
+              .style("fill", function (d) { return colorScale(x(d)); })
+              .style("opacity", 0.7)
+              .on("mouseover", function () {
+                  d3.select(this).style("stroke-width", 2);
+              })
+              .on("mouseout", function () {
+                  d3.select(this).style("stroke-width", 0);
+              })
+        .attr("title", function (d) { return d.NAME; });
 
         // Add a title.
-        dot.append("title").text(function (d) { return d.name; });
+        //              dot.append("title").text(function (d) { return d.NAME; });
+
+            $("circle").tooltip({
+                    effect: 'bouncy',
+            tipClass: 'covTooltip',
+            position: 'top center',
+            onBeforeShow: function () {
+                debugger;
+                this.getConf().offset[1] = this.getTrigger()[0].r.baseVal.value;               
+            }
+        });
 
         // Positions the dots based on data.
         function position(dot) {
@@ -145,3 +163,27 @@ $(document).ready(function () {
 
     }
 });
+
+$.easing.bouncy = function (x, t, b, c, d) {
+    var s = 1.70158;
+    if ((t /= d / 2) < 1) return c / 2 * (t * t * (((s *= (1.525)) + 1) * t - s)) + b;
+    return c / 2 * ((t -= 2) * t * (((s *= (1.525)) + 1) * t + s) + 2) + b;
+}
+
+// create custom tooltip effect for jQuery Tooltip
+$.tools.tooltip.addEffect(
+        "bouncy",
+
+// opening animation
+	function (done) {
+	    this.getTip().animate({ top: '+=15' }, 500, 'bouncy', done).show();
+	},
+
+// closing animation
+	function (done) {
+	    this.getTip().animate({ top: '-=15' }, 500, 'bouncy', function () {
+	        $(this).hide();
+	        done.call();
+	    });
+	}
+    );
