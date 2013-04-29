@@ -879,6 +879,7 @@ function clearGraphs() {
     $("#graph svg").remove();
     $("#graph .tooltip").remove();
     $("#graph label").remove();
+    $("#graph input").remove();
     $("#d3portfolio svg").remove();
     $("#graph x3d").remove();
     //$("#d3portfolio svg").remove();
