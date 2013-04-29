@@ -35,18 +35,15 @@ $(document).ready(function () {
       .attr("class", "tooltip")
       .style("opacity", 0);
 
-      //  var projection = d3.geo.mercator()
-      //    .translate([height / 4, width/4])
-      //    .scale(width / 2);
       var path = d3.geo.path();
 
-      //if(chartOption != "USAStatesMapChart") path.projection(projection);
 
       var svg = d3.select("#graph").append("svg")
       .attr("width", width)
       .attr("height", height)
     ;
 
+      
       svg.append("rect")
       .attr("class", "background")
       .attr("width", width)
@@ -64,48 +61,67 @@ $(document).ready(function () {
           .data(json.features)
           .enter().append("path")
           .attr("d", path)
-              //.attr("class",  function(d) { return (d.properties["name"] == "Illinois" ? "active" : ".features"); })
           .on("click", click)
-          .on("mouseover", hover);
+          .on("mouseover", hover)
+          .on("mouseout", out);
           });
       }
       else if (chartOption == "CanadaMapChart") {
           var projection = d3.geo.mercator();
           projection.scale(300).translate([850, 900]);
-          //g.attr("transform", "translate(" + (width / 2-200) + "," + height / 2 + ")scale(1.7,1.2)"); //Canada 
           d3.json("CanadaCoverageMap.json", function (json) {
               g.selectAll("path")
           .data(json.features)
           .enter().append("path")
           .attr("d", path.projection(projection))
-              //.attr("class",  function(d) { return (d.properties["name"] == "Illinois" ? "active" : ".features"); })
           .on("click", click)
-          .on("mouseover", hover);
+          .on("mouseover", hover)
+          .on("mouseout", out);
           });
       }
       else if (chartOption == "EuropeMapChart") {
-          var projection = d3.geo.mercator(); //.translate(-1400, 100 ).scale(3.5);
+          var projection = d3.geo.mercator(); 
           projection.scale(500).translate([350, 950]);
 
           //g.attr("transform", "translate(" + (-1400) + "," + 100 + ")scale(3.5,3.5)"); //Europe
           d3.json("europeMap.json", function (json) {
 
               var color = d3.scale.linear()
-                .domain([0, d3.max(json.features, function (d) { return d.properties.POP2005 /*/ (d.properties.AREA * 1000)*/; })])
-                .range(["green", "white"]);
+                .domain([
+              0,
+                    d3.min(json.features, function (d) { return ((d.properties.POP2005 != 0 && d.properties.AREA != 0) ? (d.properties.POP2005 /*/ (d.properties.AREA)*/) : undefined); }),
+                    d3.max(json.features, function (d) { 
+                    return ((d.properties.POP2005!=0 && d.properties.AREA!=0) ?(d.properties.POP2005 /*/ (d.properties.AREA )*/):undefined); })])
+                .range(["white", "yellow", "red"]);
 
               g.selectAll("path")
               .data(json.features)
               .enter().append("path")
               .attr("d", path.projection(projection))
-              .style("fill", function (d) { return color(d.properties.POP2005/*/(d.properties.AREA*1000)*/);})
+              .style("fill", function (d) { return color(d.properties.POP2005/*/(d.properties.AREA)*/);})
               .on("click", click)
-              .on("mouseover", hover);
+              .on("mouseover", hover)
+                .on("mouseout", out);
           });
+          
       }
 
 
-      if (chartOption != "USAStatesMapChart") {
+    if (chartOption != "USAStatesMapChart") {
+
+        var resetButton = $("#graph").append("<input style=\"vertical-align: top;\" value=\"Reset Zoom\" type=\"button\" name=\"resetPosition\"/>");
+        resetButton.on("click", function (d) {
+            g.attr("transform", "translate(0,0)scale(1)");
+            g.selectAll("path").attr("d", path.projection(projection));
+
+            var zoom = d3.behavior.zoom()
+                .on("zoom", function () {
+                    g.attr("transform", "translate(" + d3.event.translate.join(",") + ")scale(" + (d3.event.scale) + ")");
+                    g.selectAll("path").attr("d", path.projection(projection));
+                });
+            svg.call(zoom);
+        });
+
         var zoom = d3.behavior.zoom()
         .on("zoom", function () {
             g.attr("transform", "translate(" + d3.event.translate.join(",") + ")scale(" + (d3.event.scale) + ")"); // (d3.event.translate[0]) + "," + (d3.event.translate[1])
@@ -117,7 +133,7 @@ $(document).ready(function () {
 function click(d) {
   var x, y, k;
   if(d){
-	   alert("Portugal Here!");
+	   alert(d.properties["name"]+" Here!");
   }
 }
 
@@ -128,9 +144,12 @@ function hover(d){
   div .html(d.properties["name"])  
       .style("left", (d3.event.pageX) + "px")     
       .style("top", (d3.event.pageY - 28) + "px");
-} 
+}
 
-//function redraw() {
-//    d3.select(this).attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-//}
+function out(d) {
+    div.transition()
+     .duration(200)
+     .style("opacity", .0);
+}
+
  
