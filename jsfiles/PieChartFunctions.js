@@ -27,7 +27,9 @@ delay = 500,
 color = d3.scale.category10(),
 donut = d3.layout.pie().sort(null),
 arc = d3.svg.arc().innerRadius(r - 10).outerRadius(0),
-arcOver = d3.svg.arc().innerRadius(r + 30).outerRadius(0);
+arcDonut = d3.svg.arc().innerRadius(r - 10).outerRadius(110),
+arcOver = d3.svg.arc().innerRadius(r + 30).outerRadius(0),
+arcOverDonut = d3.svg.arc().innerRadius(r + 30).outerRadius(110);
 
 
 // --------- "PAY NO ATTENTION TO THE MAN BEHIND THE CURTAIN" ---------
@@ -66,6 +68,8 @@ function updateChart(JSONdata) {
     // ---------------------------------------------------------------------
     var svg = d3.select("#graph").append("svg:svg")
     .attr("width", w).attr("height", h);
+
+     $("#graph").append("<label style=\"float: right;\"><input type=\"checkbox\" name=\"pieDonutChart\"></input>Toggle Pie/Donut Chart</label>");
 
     //Title
     var title = svg.append("text")
@@ -159,9 +163,10 @@ function updateChart(JSONdata) {
 	  })
       .style("font", "15px sans-serif")
       .on("mouseover", function (d, i) {
+        var selected = $('input:checkbox[name=pieDonutChart]:checked').length > 0;
           d3.select(arcs[0][i]).transition()
                    .duration(300)
-                   .attr("d", arcOver);
+                   .attr("d", selected ? arcOverDonut : arcOver);
           d3.select(legendRects[0][i]).transition().ease("").duration(200)
                 .attr("width", 20)
                 .attr("height", 20)
@@ -172,10 +177,11 @@ function updateChart(JSONdata) {
             .attr("y", i * 30 + 12);
       })
         .on("mouseout", function (d, i) {
+          var selected = $('input:checkbox[name=pieDonutChart]:checked').length > 0;
             d3.select(arcs[0][i]).transition()
                 .ease("elastic")
                .duration(600)
-               .attr("d", arc);
+               .attr("d", selected ? arcDonut : arc);
             d3.select(legendRects[0][i]).transition().ease("").duration(200)
                 .attr("width", 10)
                 .attr("height", 10)
@@ -190,9 +196,10 @@ function updateChart(JSONdata) {
 	      alert("ID to link is: " + values.id[i]);
 	  })
         .on("mouseover", function (d, i) {
+            var selected = $('input:checkbox[name=pieDonutChart]:checked').length > 0;
             d3.select(this).transition()
                    .duration(300)
-                   .attr("d", arcOver);
+                   .attr("d", selected ? arcOverDonut : arcOver);
             d3.select(legendRects[0][i]).transition().ease("").duration(200)
                 .attr("width", 20)
                 .attr("height", 20)
@@ -203,10 +210,11 @@ function updateChart(JSONdata) {
             .attr("y", i * 30 + 12);
         })
         .on("mouseout", function (d, i) {
+            var selected = $('input:checkbox[name=pieDonutChart]:checked').length > 0;
             d3.select(this).transition()
                 .ease("elastic")
                .duration(600)
-               .attr("d", arc);
+               .attr("d", selected ? arcDonut : arc);
             d3.select(legendRects[0][i]).transition().ease("").duration(200)
                 .attr("width", 10)
                 .attr("height", 10)
@@ -247,7 +255,17 @@ function updateChart(JSONdata) {
 //    });
 
 
-
+  $('input:checkbox[name=pieDonutChart]').click(function(){
+        var selected = $('input:checkbox[name=pieDonutChart]:checked').length > 0;
+        var svg = d3.select("#graph").select("svg");
+        var arcs = svg.selectAll("path");
+        if(selected) {
+          arcs.transition().attr("d", arcDonut);
+        }
+        else {
+          arcs.transition().attr("d", arc);
+        }
+  });
 
 
 }
