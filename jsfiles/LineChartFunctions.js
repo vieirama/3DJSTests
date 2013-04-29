@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $("#submit").die("click").live("click", function () {
+    $("#submit").click(function () {
         if ($('input[name=chartOption]:checked').val() == "lineChart")
             callPostLineChart();
         if ($('input[name=chartOption]:checked').val() == "lineDateChart")
